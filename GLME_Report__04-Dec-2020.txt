@@ -1,0 +1,51 @@
+Please wait, fitting log(Poisson) GLME for pixel intensity values...complete ( 2.75 sec)
+Generalized linear mixed-effects model fit by PL
+Model information:
+Number of observations            1936
+Fixed effects coefficients          12
+Random effects coefficients         44
+Covariance parameters               10
+Distribution                    Poisson
+Link                            Log   
+FitMethod                       REMPL 
+Formula:
+Value ~ 1 + Group*Hemisphere + Group*Area + Hemisphere*Area + Group:Hemisphere:Area + (1 + Hemisphere*Area | Name)
+Model fit statistics:
+AIC       BIC       LogLikelihood    Deviance
+8650.6    8772.9    -4303.3          8606.6  
+Fixed effects coefficients (95% CIs):
+Name                                        Estimate     SE          tStat       DF      pValue       Lower       Upper    
+{'(Intercept)'                     }           3.3413    0.065749      50.819    1924            0      3.2124       3.4703
+{'Group_RS'                        }        -0.049822    0.093029    -0.53555    1924      0.59233    -0.23227      0.13263
+{'Group_SHAM'                      }         0.023621     0.16098     0.14674    1924      0.88335    -0.29209      0.33933
+{'Hemisphere_RH'                   }        -0.080204    0.094239    -0.85107    1924      0.39484    -0.26502      0.10462
+{'Area_S1'                         }          0.21148     0.10213      2.0707    1924      0.03852    0.011184      0.41178
+{'Group_RS:Hemisphere_RH'          }         0.038247     0.13332     0.28688    1924      0.77423    -0.22322      0.29971
+{'Group_SHAM:Hemisphere_RH'        }        -0.014478     0.23076    -0.06274    1924      0.94998    -0.46705       0.4381
+{'Group_RS:Area_S1'                }         -0.18888     0.14458     -1.3064    1924      0.19156    -0.47243     0.094668
+{'Group_SHAM:Area_S1'              }          -0.1836     0.25031    -0.73349    1924      0.46335     -0.6745       0.3073
+{'Hemisphere_RH:Area_S1'           }         -0.25025    0.096237     -2.6003    1924    0.0093848    -0.43899    -0.061508
+{'Group_RS:Hemisphere_RH:Area_S1'  }          0.36785     0.13617      2.7015    1924    0.0069639      0.1008      0.63491
+{'Group_SHAM:Hemisphere_RH:Area_S1'}          0.34722     0.23554      1.4741    1924      0.14061    -0.11472      0.80916
+Random effects covariance parameters:
+Group: Name (11 Levels)
+Name1                            Name2                            Type            Estimate
+{'(Intercept)'          }        {'(Intercept)'          }        {'std' }         0.14424
+{'Hemisphere_RH'        }        {'(Intercept)'          }        {'corr'}        -0.72931
+{'Area_S1'              }        {'(Intercept)'          }        {'corr'}        -0.10135
+{'Hemisphere_RH:Area_S1'}        {'(Intercept)'          }        {'corr'}         0.19035
+{'Hemisphere_RH'        }        {'Hemisphere_RH'        }        {'std' }         0.20669
+{'Area_S1'              }        {'Hemisphere_RH'        }        {'corr'}         0.25954
+{'Hemisphere_RH:Area_S1'}        {'Hemisphere_RH'        }        {'corr'}        -0.62038
+{'Area_S1'              }        {'Area_S1'              }        {'std' }         0.22511
+{'Hemisphere_RH:Area_S1'}        {'Area_S1'              }        {'corr'}        -0.63286
+{'Hemisphere_RH:Area_S1'}        {'Hemisphere_RH:Area_S1'}        {'std' }         0.20747
+Group: Error
+Name                        Estimate
+{'sqrt(Dispersion)'}        1       
+R-squared:
+Ordinary: 0.1384
+Adjusted: 0.1335
+ANOVA:
+ANOVA marginal tests: DFMethod = 'residual'
+
