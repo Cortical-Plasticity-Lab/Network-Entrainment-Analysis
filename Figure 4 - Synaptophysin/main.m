@@ -18,7 +18,7 @@ fprintf(1,'\nRetrieving ALL masked pixels...');
 fprintf(1,'complete\n');
 
 %% SUB-SAMPLE AND EXPORT A DATA TABLE FOR STATS
-N = 1000;
+N = 50000;
 
 Value = [];
 Hemisphere = [];
@@ -26,7 +26,7 @@ Name = [];
 Area = [];
 Group = [];
 
-fprintf(1,'\nConcatenating table...\n');
+fprintf(1,'\nConcatenating table (using <strong>N = %d</strong>)...\n',N);
 for ii = 1:numel(data)
    n = numel(data{ii});
    k = min(N,numel(data{ii}));
@@ -45,7 +45,8 @@ end
 fprintf(1,'\nTable complete.\n\n');
 T = table(Name,Group,Hemisphere,Area,Value);
 exportName = getExportName(EXPORT_NAME);
-writetable(T,exportName);
+% writetable(T,exportName); % Export only works well with limited # of
+%                           % sub-samples due to limitations of Spreadsheet size.
 toc(maintic);
 
 %% Export figure of input distribution
@@ -117,6 +118,10 @@ disp(X);
 
 %% Export cross-tabulation result
 writetable(X,'Exports/Cross-Tabulation.xlsx');
+nTotalCount = cellfun(@numel,data,'UniformOutput',true);
+Y = struct2table(meta);
+Y.NTotal = nTotalCount;
+writetable(Y,'Exports/Total-ROI-Pixel-Tabulation.xlsx');
 
 %% Generate grouped bar plot as {LH S1, LH RFA, RH S1, RH RFA}
 fig = exportBarChart(T);

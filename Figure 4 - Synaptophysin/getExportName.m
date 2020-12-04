@@ -7,10 +7,10 @@ function exportName = getExportName(baseName)
 
 %%
 ii = 0;
-exportName = sprintf('%s_%02g.xls',baseName,ii);
+exportName = sprintf('%s_%02g.xlsx',baseName,ii);
 while exist(exportName,'file')~=0
    ii = ii + 1;
-   exportName = sprintf('%s_%02g.xls',baseName,ii);
+   exportName = sprintf('%s_%02g.xlsx',baseName,ii);
 end
 
 end
