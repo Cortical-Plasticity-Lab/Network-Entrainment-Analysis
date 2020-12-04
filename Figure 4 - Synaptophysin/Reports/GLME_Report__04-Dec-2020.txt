@@ -1,0 +1,59 @@
+Please wait, fitting log(Poisson) GLME for pixel intensity values...complete ( 3.14 sec)
+Generalized linear mixed-effects model fit by PL
+Model information:
+Number of observations            1936
+Fixed effects coefficients          12
+Random effects coefficients         44
+Covariance parameters               10
+Distribution                    Poisson
+Link                            Log   
+FitMethod                       REMPL 
+Formula:
+Value ~ 1 + Group*Hemisphere + Group*Area + Hemisphere*Area + Group:Hemisphere:Area + (1 + Hemisphere*Area | Name)
+Model fit statistics:
+AIC      BIC      LogLikelihood    Deviance
+10420    10542    -5187.8          10376   
+Fixed effects coefficients (95% CIs):
+Name                                        Estimate     SE          tStat       DF      pValue         Lower       Upper   
+{'(Intercept)'                     }           3.2902    0.099551      33.051    1924    4.2046e-190       3.095      3.4855
+{'Group_RS'                        }         0.017539     0.14077     0.12459    1924        0.90086    -0.25855     0.29362
+{'Group_SHAM'                      }          0.13047      0.2436     0.53557    1924        0.59232    -0.34729     0.60822
+{'Hemisphere_RH'                   }        -0.017479     0.11253    -0.15532    1924        0.87658    -0.23818     0.20322
+{'Area_S1'                         }          0.37705     0.13762      2.7398    1924      0.0062051     0.10715     0.64696
+{'Group_RS:Hemisphere_RH'          }        0.0040677     0.15913    0.025562    1924        0.97961    -0.30802     0.31616
+{'Group_SHAM:Hemisphere_RH'        }        -0.062131     0.27533    -0.22566    1924        0.82149     -0.6021     0.47784
+{'Group_RS:Area_S1'                }          -0.3617     0.19473     -1.8574    1924       0.063406     -0.7436    0.020211
+{'Group_SHAM:Area_S1'              }         -0.41029     0.33716     -1.2169    1924        0.22379     -1.0715     0.25095
+{'Hemisphere_RH:Area_S1'           }         -0.46028    0.087999     -5.2306    1924     1.8738e-07    -0.63287     -0.2877
+{'Group_RS:Hemisphere_RH:Area_S1'  }           0.5607     0.12446      4.5052    1924     7.0282e-06     0.31662     0.80478
+{'Group_SHAM:Hemisphere_RH:Area_S1'}          0.57164     0.21504      2.6583    1924      0.0079183     0.14991     0.99338
+Random effects covariance parameters:
+Group: Name (11 Levels)
+Name1                            Name2                            Type            Estimate
+{'(Intercept)'          }        {'(Intercept)'          }        {'std' }         0.22066
+{'Hemisphere_RH'        }        {'(Intercept)'          }        {'corr'}        -0.73418
+{'Area_S1'              }        {'(Intercept)'          }        {'corr'}         -0.4077
+{'Hemisphere_RH:Area_S1'}        {'(Intercept)'          }        {'corr'}         0.41887
+{'Hemisphere_RH'        }        {'Hemisphere_RH'        }        {'std' }         0.24818
+{'Area_S1'              }        {'Hemisphere_RH'        }        {'corr'}          0.4318
+{'Hemisphere_RH:Area_S1'}        {'Hemisphere_RH'        }        {'corr'}        -0.62524
+{'Area_S1'              }        {'Area_S1'              }        {'std' }         0.30533
+{'Hemisphere_RH:Area_S1'}        {'Area_S1'              }        {'corr'}        -0.84171
+{'Hemisphere_RH:Area_S1'}        {'Hemisphere_RH:Area_S1'}        {'std' }         0.18825
+Group: Error
+Name                        Estimate
+{'sqrt(Dispersion)'}        1       
+R-squared:
+Ordinary: 0.1906
+Adjusted: 0.1860
+ANOVA:
+ANOVA marginal tests: DFMethod = 'residual'
+Term                             FStat       DF1    DF2     pValue     
+{'(Intercept)'          }          1092.4    1      1924    4.2046e-190
+{'Group'                }         0.14391    2      1924        0.86597
+{'Hemisphere'           }        0.024125    1      1924        0.87658
+{'Area'                 }          7.5063    1      1924      0.0062051
+{'Group:Hemisphere'     }        0.029958    2      1924        0.97049
+{'Group:Area'           }           1.978    2      1924        0.13863
+{'Hemisphere:Area'      }          27.359    1      1924     1.8738e-07
+{'Group:Hemisphere:Area'}           11.15    2      1924     1.5327e-05

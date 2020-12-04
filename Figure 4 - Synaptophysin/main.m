@@ -1,13 +1,17 @@
 %% MAIN  Main script for exporting stats on AA synaptophysin (round 2)
 clear; close all; clc;
 
+%% MAIN CONFIGURATION VARIABLE
+% This must point to the data folder (DIR)
+DIR = 'G:/Lab Member Folders/Page Hayley/Max Data/AA synaptophysin';
 
-%%
-DIR = 'G:\Lab Member Folders\Page Hayley\Max Data\AA synaptophysin';
-EXPORT_NAME = 'IntensityStatsTable';
+%% (other configuration variables)
+EXPORT_NAME = sprintf('Exports/IntensityStatsTable__%s',string(date()));
+REPORT_NAME_STRING = 'Reports/GLME_Report__%s.txt';
+FIG_OUTPUT = 'Figures';
 
+%% AGGREGATE THE DATA
 F = dir(fullfile(DIR,'*.tif'));
-
 maintic = tic;
 fprintf(1,'\nRetrieving ALL masked pixels...');
 [data,meta] = getMaskedPixelData(F);
@@ -41,9 +45,15 @@ end
 fprintf(1,'\nTable complete.\n\n');
 T = table(Name,Group,Hemisphere,Area,Value);
 exportName = getExportName(EXPORT_NAME);
-
 writetable(T,exportName);
 toc(maintic);
+
+%% Export figure of input distribution
+fig = exportHistogram(T.Value);
+savefig(fig,fullfile(FIG_OUTPUT,'Figure 4 - Intensity Distribution Raw.fig'));
+saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Intensity Distribution Raw.eps'));
+saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Intensity Distribution Raw.png'));
+delete(fig);
 
 %% Run Statistics
 clc;
@@ -60,7 +70,7 @@ disp('<strong>ANOVA:</strong>');
 disp(anova(glme));
 
 out = command_window_text();
-fid = fopen(sprintf('GLME_Report__%s.txt',string(date())),'w');
+fid = fopen(sprintf(REPORT_NAME_STRING,string(date())),'w');
 for ii = 1:numel(out)
    fprintf(fid,'%s\n',out{ii}); 
 end
@@ -75,15 +85,9 @@ set(get(gca,'XLabel'),'FontName','Arial','FontSize',16,'Color','k');
 set(get(gca,'YLabel'),'FontName','Arial','FontSize',16,'Color','k');
 set(get(gca,'Title'),'FontName','Arial','FontSize',20,'Color','k','FontWeight','bold');
 set(gca,'LineWidth',1.5,'XColor','k','YColor','k');
-savefig(fig,'Figure 4 - Fitted Residuals.fig');
-saveas(fig,'Figure 4 - Fitted Residuals.eps');
-saveas(fig,'Figure 4 - Fitted Residuals.png');
-delete(fig);
-
-fig = exportHistogram(T.Value);
-savefig(fig,'Figure 4 - Intensity Distribution Raw.fig');
-saveas(fig,'Figure 4 - Intensity Distribution Raw.eps');
-saveas(fig,'Figure 4 - Intensity Distribution Raw.png');
+savefig(fig,fullfile(FIG_OUTPUT,'Figure 4 - Fitted Residuals.fig'));
+saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Fitted Residuals.eps'));
+saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Fitted Residuals.png'));
 delete(fig);
 
 fig = figure('Name','Histogram of Residuals',...
@@ -94,7 +98,7 @@ set(get(gca,'XLabel'),'FontName','Arial','FontSize',16,'Color','k');
 set(get(gca,'YLabel'),'FontName','Arial','FontSize',16,'Color','k');
 set(get(gca,'Title'),'FontName','Arial','FontSize',20,'Color','k','FontWeight','bold');
 set(gca,'LineWidth',1.5,'XColor','k','YColor','k');
-savefig(fig,'Figure 4 - Histogram of Residuals.fig');
-saveas(fig,'Figure 4 - Histogram of Residuals.eps');
-saveas(fig,'Figure 4 - Histogram of Residuals.png');
+savefig(fig,fullfile(FIG_OUTPUT,'Figure 4 - Histogram of Residuals.fig'));
+saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Histogram of Residuals.eps'));
+saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Histogram of Residuals.png'));
 delete(fig);
