@@ -1,11 +1,11 @@
 function [fig,ax,h,x,y] = exportHistogram(data,varargin)
 %EXPORTHISTOGRAM Export histograms for Alberto's data.
 %
-%   fig = exportHistogram(T);
-%   [fig,ax,h,x,y] = exportHistogram(T,'Name',value,...);
+%   fig = exportHistogram(data);
+%   [fig,ax,h,x,y] = exportHistogram(data,'Name',value,...);
 %
 % Inputs
-%   T - Data table from `IntensityStatsTable.xlsx`
+%   data     - Pixel intensity values from `IntensityStatsTable.xlsx`
 %   varargin - (Optional) 'Name',value pairs for `bar` object
 %
 % Output

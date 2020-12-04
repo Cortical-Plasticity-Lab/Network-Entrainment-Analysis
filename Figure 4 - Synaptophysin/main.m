@@ -29,7 +29,7 @@ Group = [];
 fprintf(1,'\nConcatenating table...\n');
 for ii = 1:numel(data)
    n = numel(data{ii});
-   k = min(N,numel(data));
+   k = min(N,numel(data{ii}));
    fprintf(1,'->\t%s:%s-%s...',meta(ii).Name,meta(ii).Hemisphere,meta(ii).Area);
    
    Name = [Name; repmat(string(meta(ii).Name),k,1)]; %#ok<*AGROW>
@@ -56,13 +56,15 @@ saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Intensity Distribution Raw.png'));
 delete(fig);
 
 %% Run Statistics
-clc;
 tic;
 fprintf(1,'Please wait, fitting log(Poisson) GLME for pixel intensity values...');
 glme = fitglme(T,'Value~Group*Hemisphere*Area+(1+Hemisphere*Area|Name)',...
     'FitMethod','REMPL','Link','log','Distribution','Poisson');
 fprintf(1,'complete (%5.2f sec)\n',toc);
+pause(2);
 
+%% Create Statistics Export
+clc;
 disp(glme);
 disp('<strong>R-squared:</strong>');
 disp(glme.Rsquared);
@@ -70,7 +72,11 @@ disp('<strong>ANOVA:</strong>');
 disp(anova(glme));
 
 out = command_window_text();
-fid = fopen(sprintf(REPORT_NAME_STRING,string(date())),'w');
+fname_export = sprintf(REPORT_NAME_STRING,string(date()));
+if exist(fname_export,'file')~=0
+    delete(fname_export);
+end
+fid = fopen(fname_export,'w');
 for ii = 1:numel(out)
    fprintf(fid,'%s\n',out{ii}); 
 end
@@ -102,3 +108,20 @@ savefig(fig,fullfile(FIG_OUTPUT,'Figure 4 - Histogram of Residuals.fig'));
 saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Histogram of Residuals.eps'));
 saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Histogram of Residuals.png'));
 delete(fig);
+
+%% CROSS-TABULATE DATA TO GET COUNTS BY ANIMAL OF INCLUDED PIXELS
+clc;
+[G,X] = findgroups(T(:,{'Name','Group','Hemisphere','Area'}));
+X.N = splitapply(@numel,T.Value,G);
+disp(X);
+
+%% Export cross-tabulation result
+writetable(X,'Exports/Cross-Tabulation.xlsx');
+
+%% Generate grouped bar plot as {LH S1, LH RFA, RH S1, RH RFA}
+fig = exportBarChart(T);
+savefig(fig,fullfile(FIG_OUTPUT,'Figure 4 - Bar Chart of Means.fig'));
+saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Bar Chart of Means.eps'));
+saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Bar Chart of Means.png'));
+delete(fig);
+
