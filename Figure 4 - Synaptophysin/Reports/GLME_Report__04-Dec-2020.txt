@@ -1,6 +1,6 @@
 Generalized linear mixed-effects model fit by PL
 Model information:
-Number of observations           44000
+Number of observations          220000
 Fixed effects coefficients          12
 Random effects coefficients         44
 Covariance parameters               10
@@ -11,6 +11,6 @@ Formula:
 Value ~ 1 + Group*Hemisphere + Group*Area + Hemisphere*Area + Group:Hemisphere:Area + (1 + Hemisphere*Area | Name)
 Model fit statistics:
 AIC           BIC           LogLikelihood    Deviance  
-2.6416e+05    2.6436e+05    -1.3206e+05      2.6412e+05
+1.3453e+06    1.3455e+06    -6.7262e+05      1.3452e+06
 Fixed effects coefficients (95% CIs):
 

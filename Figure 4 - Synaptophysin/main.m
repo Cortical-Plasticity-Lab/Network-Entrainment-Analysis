@@ -4,7 +4,9 @@ clear; close all; clc;
 %% MAIN CONFIGURATION VARIABLE
 % This must point to the data folder (DIR)
 DIR = 'G:/Lab Member Folders/Page Hayley/Max Data/AA synaptophysin';
-
+THRESH = [1 100]; % Pixel intensity [lower, upper] thresholds
+                  % Exclude for values where THRESH(1) <= value < THRESH(2)
+                  
 %% (other configuration variables)
 EXPORT_NAME = sprintf('Exports/IntensityStatsTable__%s',string(date()));
 REPORT_NAME_STRING = 'Reports/GLME_Report__%s.txt';
@@ -14,11 +16,11 @@ FIG_OUTPUT = 'Figures';
 F = dir(fullfile(DIR,'*.tif'));
 maintic = tic;
 fprintf(1,'\nRetrieving ALL masked pixels...');
-[data,meta] = getMaskedPixelData(F);
+[data,meta] = getMaskedPixelData(F,THRESH);
 fprintf(1,'complete\n');
 
 %% SUB-SAMPLE AND EXPORT A DATA TABLE FOR STATS
-N = 50000;
+N = 5000;
 
 Value = [];
 Hemisphere = [];
@@ -29,7 +31,7 @@ Group = [];
 fprintf(1,'\nConcatenating table (using <strong>N = %d</strong>)...\n',N);
 for ii = 1:numel(data)
    n = numel(data{ii});
-   k = min(N,numel(data{ii}));
+   k = min(N,n);
    fprintf(1,'->\t%s:%s-%s...',meta(ii).Name,meta(ii).Hemisphere,meta(ii).Area);
    
    Name = [Name; repmat(string(meta(ii).Name),k,1)]; %#ok<*AGROW>
@@ -62,7 +64,6 @@ fprintf(1,'Please wait, fitting log(Poisson) GLME for pixel intensity values...'
 glme = fitglme(T,'Value~Group*Hemisphere*Area+(1+Hemisphere*Area|Name)',...
     'FitMethod','REMPL','Link','log','Distribution','Poisson');
 fprintf(1,'complete (%5.2f sec)\n',toc);
-pause(2);
 
 %% Create Statistics Export
 clc;
@@ -122,6 +123,14 @@ nTotalCount = cellfun(@numel,data,'UniformOutput',true);
 Y = struct2table(meta);
 Y.NTotal = nTotalCount;
 writetable(Y,'Exports/Total-ROI-Pixel-Tabulation.xlsx');
+Y.data = data;
+
+%% Export per-grouping histograms
+fig = exportGroupedHistograms(Y,THRESH);
+savefig(fig,fullfile(FIG_OUTPUT,'Figure 4 - Grouped Intensity Histograms.fig'));
+saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Grouped Intensity Histograms.eps'));
+saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Grouped Intensity Histograms.png'));
+delete(fig);
 
 %% Generate grouped bar plot as {LH S1, LH RFA, RH S1, RH RFA}
 fig = exportBarChart(T);
