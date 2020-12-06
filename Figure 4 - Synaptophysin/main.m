@@ -3,7 +3,8 @@ clear; close all; clc;
 
 %% MAIN CONFIGURATION VARIABLE
 % This must point to the data folder (DIR)
-DIR = 'G:/Lab Member Folders/Page Hayley/Max Data/AA synaptophysin';
+DIR = 'Q:/Lab Member Folders/Page Hayley/Max Data/AA synaptophysin';
+LOCAL_PIXEL_INTENSITY_DATA_FILE = 'IntensityData.mat';
 THRESH = [1 100]; % Pixel intensity [lower, upper] thresholds
                   % Exclude for values where THRESH(1) <= value < THRESH(2)
                   
@@ -15,9 +16,7 @@ FIG_OUTPUT = 'Figures';
 %% AGGREGATE THE DATA
 F = dir(fullfile(DIR,'*.tif'));
 maintic = tic;
-fprintf(1,'\nRetrieving ALL masked pixels...');
-[data,meta] = getMaskedPixelData(F,THRESH);
-fprintf(1,'complete\n');
+[data,meta] = getMaskedPixelData(F,THRESH,LOCAL_PIXEL_INTENSITY_DATA_FILE);
 
 %% SUB-SAMPLE AND EXPORT A DATA TABLE FOR STATS
 N = 5000;
