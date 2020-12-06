@@ -2,11 +2,29 @@
 clear; close all; clc;
 
 %% MAIN CONFIGURATION VARIABLE
-% This must point to the data folder (DIR)
-DIR = 'Q:/Lab Member Folders/Page Hayley/Max Data/AA synaptophysin';
+% Name of local pixel intensity file. If it does not exist, it is created
+% after the first extraction. This is used to speed up subsequent loads
+% without having to re-extract the pixel data from source. If you require
+% re-extraction, change the filename here or delete this file locally.
 LOCAL_PIXEL_INTENSITY_DATA_FILE = 'IntensityData.mat';
-THRESH = [1 100]; % Pixel intensity [lower, upper] thresholds
-                  % Exclude for values where THRESH(1) <= value < THRESH(2)
+
+% If no local data file exists, this points to the "server" (or general
+% file folder) containing the *.tiff files from which pixel intensities
+% were extracted.
+DIR = 'Q:/Lab Member Folders/Page Hayley/Max Data/AA synaptophysin';
+
+% [LOWER, UPPER] pixel intensity bounds. 
+%  For a given integer describing pixel intensity (`Value`) this sets the
+%  upper and lower bounds extracted from pixels included by the binary mask
+%  by requiring that each `x` in Value satisfies {LOWER <= x < UPPER}
+THRESH = [1 100];
+                  
+   
+% This is a string used to tag notes about a particular run configuration. 
+% It is included in the exported statistics *.txt file.
+NOTES = sprintf(strcat("06-Dec-2020\n", ...
+   "\tSwitched from log(Poisson) to inverse-link Gamma.\n", ...
+   "\tChanged DummyVarCoding from 'reference' to 'effects'.\n")); 
                   
 %% (other configuration variables)
 EXPORT_NAME = sprintf('Exports/IntensityStatsTable__%s',string(date()));
@@ -59,13 +77,19 @@ delete(fig);
 
 %% Run Statistics
 tic;
-fprintf(1,'Please wait, fitting log(Poisson) GLME for pixel intensity values...');
+fprintf(1,'Please wait, fitting <strong>inverse-link Gamma</strong> GLME for pixel intensity values...');
 glme = fitglme(T,'Value~Group*Hemisphere*Area+(1+Hemisphere*Area|Name)',...
-    'FitMethod','REMPL','Link','log','Distribution','Poisson');
+    'FitMethod','REMPL',...
+    'Link',-1,...
+    'Distribution','Gamma',...
+    'DummyVarCoding','effects');
 fprintf(1,'complete (%5.2f sec)\n',toc);
 
 %% Create Statistics Export
 clc;
+fprintf(1,'--- <strong>NOTES</strong> ---\n\n');
+fprintf(1,'%s\n',NOTES);
+fprintf(1,'-- <strong>END NOTES</strong> --\n\n');
 disp(glme);
 disp('<strong>R-squared:</strong>');
 disp(glme.Rsquared);

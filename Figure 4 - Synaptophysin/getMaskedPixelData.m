@@ -37,6 +37,7 @@ if exist(fname,'file')==0
    if n > 1
       tic;
       fprintf(1,'No local copy of <strong>%s</strong>. Extracting from server.\n',fname);
+      fprintf(1,'\t->\t<strong>SERVER:</strong> `%s`\n\n',F(1).folder);
       data = cell(n,1);
       meta = struct(...
           'Name',cell(n,1),...
