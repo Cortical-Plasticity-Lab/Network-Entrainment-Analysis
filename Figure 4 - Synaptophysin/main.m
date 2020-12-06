@@ -158,9 +158,13 @@ saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Grouped Intensity Histograms.png'));
 delete(fig);
 
 %% Generate grouped bar plot as {LH S1, LH RFA, RH S1, RH RFA}
-fig = exportBarChart(T,'ErrorType','STD');
-savefig(fig,fullfile(FIG_OUTPUT,'Figure 4 - Bar Chart of Means.fig'));
-saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Bar Chart of Means.eps'));
-saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Bar Chart of Means.png'));
-delete(fig);
+ErrorType = {'STD','SEM','Image','Location','Rat','Treatment'};
+for ii = 1:numel(ErrorType)
+   figName = sprintf('Figure 4 - Bar Chart of Means - Error is %s',ErrorType{ii});
+   fig = exportBarChart(Y,'ErrorType',ErrorType{ii});
+   savefig(fig,fullfile(FIG_OUTPUT,[figName '.fig']));
+   saveas(fig,fullfile(FIG_OUTPUT,[figName '.eps']));
+   saveas(fig,fullfile(FIG_OUTPUT,[figName '.png']));
+   delete(fig);
+end
 

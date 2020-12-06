@@ -1,13 +1,46 @@
-function [fig,P1,P2] = exportBarChart(T,varargin)
+function [fig,P1,P2] = exportBarChart(Y,varargin)
 %EXPORTBARCHART Export bar chart for Figure 4 by-area comparisons
 %
-%   fig = exportBarChart(T);
-%   fig = exportBarChart(T,'Name',value,...);
+%   fig = exportBarChart(Y);
+%   fig = exportBarChart(Y,'Name',value,...);
 %   [fig,P1,P2] = ... 
 %
 % Inputs
-%   T - Data table from `IntensityStatsTable.xlsx`
-%   varargin - (Optional) 'Name',value pairs for `bar` object
+%   Y        - Data table with all intensity values extracted in `data` included as cell array for each corresponding image. 
+%   varargin - (Optional) 'Name',value pairs:
+%                 -- Might change --
+%                 * 'ErrorType' : 'STD' | 'SEM' | 'Image' | 'Rat' | 'Area'/'Site'/'Location' | 'Group'
+%                    + 'STD' (def) - Compute standard deviation from data
+%                                    as grouped for a given
+%                                    Area:Hemisphere:Group combination.
+%                                    Seems like the best choice.
+%  
+%                    + 'SEM' - Computes standard error from data as grouped
+%                                for a given Area:Hemisphere:Group
+%                                combination. Most likely underestimates
+%                                the dispersion of that data. Not
+%                                recommended.
+%
+%                    + 'Image' - Computes standard deviation of the mean
+%                              values of each unique fluorescent intensity
+%                              image. Note that for SHAM this goes to zero
+%                              since each grouping only has one 
+%        
+%                    + 'Rat' - Computes standard deviation of the mean
+%                              values for data grouped by rat.
+%
+%                    + 'Area' - Computes standard deviation of the mean
+%                                values for data grouped by Area
+%                                ("spatial groupings" so this is the same
+%                                as 'Site' or 'Location').
+%     
+%                    + 'Group' - Computes standard deviation of the mean
+%                                values for data grouped by 'ADS', 'SHAM'
+%                                or 'RS'.
+%
+%                 -- Probably don't change --
+%                 * 'Group' : ["SHAM"; "ADS"; "RS"]
+%                 * 
 %
 % Output
 %   fig - Figure handle
@@ -24,7 +57,7 @@ pars.Offset = [-0.5; 0; 0.5];
 pars.ID = ["LH S1"; "LH RFA"; "RH S1"; "RH RFA"];
 pars.XTick = [1;3;5;7];
 % Other properties
-pars.ErrorType = 'STD'; % 'SD' or 'STD' | 'SEM'
+pars.ErrorType = 'SDM'; % 'SD' or 'STD' | 'SEM' | 'SDM' | 'Grouped'
 
 fn = fieldnames(pars);
 for iV = 1:2:numel(varargin)
@@ -47,27 +80,68 @@ fig = figure(...
     'Units','Normalized',...
     'PaperUnits','inches',...
     'PaperSize',[8.5 11],...
-    'Position',[0.3 0.3 0.29 0.38]);
+    'Position',[0.3 0.085 0.3 0.6]);
 
 ax = axes(fig,'XColor','k','YColor','k','NextPlot','add',...
     'LineWidth',1.5,'FontName','Arial','FontSize',16,...
     'XTick',P2.XTick,'XLim',[0 8],...
     'XTickLabels',P2.ID);
-ylabel(ax,'Mean Pixel Intensity',...
-    'FontName','Arial','Color','k','FontSize',16);
+ylabel(ax,sprintf('Mean Pixel Intensity\n(All Masked Pixels)'),...
+    'FontName','Arial','Color','k','FontSize',16,'FontWeight','bold');
 
 % Group data
-T.ID = strcat(T.Hemisphere," ",T.Area);
-[G,TID] = findgroups(T(:,{'ID','Group'}));
-TID.Mean = splitapply(@nanmean,T.Value,G);
+Y.Name = string(Y.Name);
+Y.Group = string(Y.Group);
+Y.Area = string(Y.Area);
+Y.Hemisphere = string(Y.Hemisphere);
+
+Y.ID = strcat(Y.Hemisphere," ",Y.Area);
+[G,TID] = findgroups(Y(:,{'ID','Group'}));
+TID.Name = splitapply(@(x)x(1),Y.Name,G);
+TID.Mean = splitapply(@(C)nanmean(vertcat(C{:})),Y.data,G);
 
 switch upper(pars.ErrorType)
    case {'SD','STD','STANDARD DEVIATION'}
-      pars.ErrorType = 'STD';
-      TID.STD = splitapply(@(x)nanstd(x,[],1),T.Value,G);
+      TID.Error = splitapply(@(C)nanstd(vertcat(C{:}),[],1),Y.data,G);
+      TID.Properties.VariableDescriptions{'Error'} = 'STD';
    case {'SEM','SE','STANDARD ERROR', 'STANDARD ERROR OF THE MEAN'}
-      pars.ErrorType = 'SEM';
-      TID.SEM = splitapply(@(x)nanstd(x,[],1)/sqrt(numel(x)),T.Value,G);
+      TID.Error = splitapply(@(C)nanstd(vertcat(C{:}),[],1)/sqrt(numel(vertcat(C{:}))),Y.data,G);
+      TID.Properties.VariableDescriptions{'Error'} = 'SEM';
+   case 'IMAGE'
+      TID.Error = splitapply(@(C)nanstd(cellfun(@nanmean,C,'UniformOutput',true),[],1),Y.data,G);
+      TID.Properties.VariableDescriptions{'Error'} = ...
+         'STD (by Image)';
+   case {'AREA','SITE','LOC','LOCATION','HEMISPHERE','SPATIAL','ID'}
+      [G,tmp] = findgroups(Y(:,{'ID'}));
+      tmp.Error = splitapply(@(C)nanstd(vertcat(C{:}),[],1),Y.data,G);
+      TID = outerjoin(TID,tmp,'Keys',{'ID'},...
+         'Type','Left',...
+         'LeftVariables',{'ID','Group','Mean'},...
+         'RightVariables',{'Error'});
+      TID.Properties.VariableDescriptions{'Error'} = ...
+         'STD (by Location)';
+   case {'RAT','NAME','ANIMAL'}
+      [G,tmp] = findgroups(Y(:,{'Name'}));
+      tmp.Group = splitapply(@(x)x(1),Y.Group,G);
+      tmp.Mean = splitapply(@(C)nanmean(vertcat(C{:}),1),Y.data,G);
+      TID.Error = nan(size(TID,1),1);
+      for ii = 1:numel(pars.Group)
+         x = tmp.Mean(tmp.Group==pars.Group(ii));
+         if numel(x) > 1
+            TID.Error(TID.Group==pars.Group(ii)) = nanstd(x,[],1);
+         end
+      end
+      TID.Properties.VariableDescriptions{'Error'} = ...
+         'STD (by Rat)';
+   case {'GROUP','TREATMENT'}
+      [G,tmp] = findgroups(Y(:,{'Group'}));
+      tmp.Error = splitapply(@(C)nanstd(vertcat(C{:}),[],1),Y.data,G);
+      TID = outerjoin(TID,tmp,'Keys',{'Group'},...
+         'Type','Left',...
+         'LeftVariables',{'ID','Group','Mean'},...
+         'RightVariables',{'Error'});
+      TID.Properties.VariableDescriptions{'Error'} = ...
+         'STD (by Treatment)';
    otherwise
       error('Unrecognized value of `ErrorType`: %s',pars.ErrorType);
 end
@@ -75,7 +149,7 @@ end
 for ii = 1:size(P1,1)
     t = TID(TID.Group==P1.Group(ii),:);
     t = outerjoin(t,P2,'Type','left',...
-        'LeftVariables',{'ID','Group','Mean',pars.ErrorType},...
+        'LeftVariables',{'ID','Group','Mean','Error'},...
         'RightVariables',{'XTick'},...
         'Keys',{'ID'});
     t.X = t.XTick + P1.Offset(ii);
@@ -84,10 +158,10 @@ for ii = 1:size(P1,1)
         'FaceColor',P1.Color(ii,:),...
         'DisplayName',P1.Group(ii),...
         'Tag',P1.Group(ii),'BarWidth',0.20);
-    h = errorbar(t.X,t.Mean,-t.(pars.ErrorType)*0.5,t.(pars.ErrorType)*0.5,...
+    h = errorbar(t.X,t.Mean,-t.Error*0.5,t.Error*0.5,...
         'Parent',ax,...
         'LineWidth',1.5,'Color','m','LineStyle','none',...
-        'DisplayName',sprintf('1 %s',pars.ErrorType));
+        'DisplayName',sprintf('1 %s',TID.Properties.VariableDescriptions{'Error'}));
     h.Annotation.LegendInformation.IconDisplayStyle = 'off';
 end
 h.Annotation.LegendInformation.IconDisplayStyle = 'on';
