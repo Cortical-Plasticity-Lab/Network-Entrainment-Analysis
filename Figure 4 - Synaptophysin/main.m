@@ -78,7 +78,7 @@ delete(fig);
 %% Run Statistics
 tic;
 fprintf(1,'Please wait, fitting <strong>inverse-link Gamma</strong> GLME for pixel intensity values...');
-glme = fitglme(T,'Value~Group*Hemisphere*Area+(1+Hemisphere*Area|Name)',...
+glme = fitglme(T,'Value~1+Group*Hemisphere*Area+(1+Hemisphere*Area|Name)',...
     'FitMethod','REMPL',...
     'Link',-1,...
     'Distribution','Gamma',...
@@ -90,21 +90,23 @@ clc;
 fprintf(1,'--- <strong>NOTES</strong> ---\n\n');
 fprintf(1,'%s\n',NOTES);
 fprintf(1,'-- <strong>END NOTES</strong> --\n\n');
+fprintf(1,'--- <strong>MODEL</strong> ---\n\n');
 disp(glme);
 disp('<strong>R-squared:</strong>');
 disp(glme.Rsquared);
-disp('<strong>ANOVA:</strong>');
+fprintf(1,'\n-- <strong>END MODEL</strong> --\n\n');
+fprintf(1,'--- <strong>ANOVA</strong> ---\n');
 disp(anova(glme));
+fprintf(1,'\n-- <strong>END ANOVA</strong> --\n\n');
+pause(2);
 
-out = command_window_text();
+[~,raw,~] = command_window_text();
 fname_export = sprintf(REPORT_NAME_STRING,string(date()));
 if exist(fname_export,'file')~=0
     delete(fname_export);
 end
 fid = fopen(fname_export,'w');
-for ii = 1:numel(out)
-   fprintf(fid,'%s\n',out{ii}); 
-end
+fprintf(fid,'**GLME: %s**\n%s',string(date()),raw); 
 fclose(fid);
 
 %% Make diagnostic plots

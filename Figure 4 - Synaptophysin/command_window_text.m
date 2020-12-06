@@ -28,7 +28,10 @@ function [out, raw, h]=command_window_text(varargin)
 cmdWin_comps=get(cmdWin,'Components');
 subcomps=get(cmdWin_comps(1),'Components');
 h=get(subcomps(1),'Components');
-raw=get(h(1),'text');
+raw = '';
+for ii = 1:numel(h)
+   raw=[raw, get(h(1),'text')]; %#ok<AGROW>
+end
 out=textscan(raw,'%s','Delimiter','\r\n','MultipleDelimsAsOne',1);
 out=out{1};
 if nargin==1 && varargin{1}~=0 || nargin==0
