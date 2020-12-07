@@ -1,5 +1,7 @@
 function jControl = findjobj_fast(hControl, jContainer)
-    try jControl = hControl.getTable; return, catch, end  % fast bail-out for old uitables
+%FINDOBJ_FAST "Fast" version of findobj?
+
+try jControl = hControl.getTable; return, catch, end  % fast bail-out for old uitables
     try jControl = hControl.JavaFrame.getGUIDEView; return, catch, end  % bail-out for HG2 matlab.ui.container.Panel
     oldWarn = warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
     if nargin < 2 || isempty(jContainer)

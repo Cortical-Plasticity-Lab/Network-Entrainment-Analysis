@@ -168,3 +168,9 @@ for ii = 1:numel(ErrorType)
    delete(fig);
 end
 
+%% Generate "Violin" plot for Federico
+[fig,TID] = exportSwarmChart(Y);
+savefig(fig,fullfile(FIG_OUTPUT,'Figure 4 - Violin-like Plots.fig'));
+saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Violin-like Plots.eps'));
+saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Violin-like Plots.png'));
+delete(fig);
