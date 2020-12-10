@@ -86,38 +86,12 @@ glme = fitglme(T,'Value~1+Group*Hemisphere*Area+(1+Hemisphere*Area|Name)',...
 fprintf(1,'complete (%5.2f sec)\n',toc);
 
 %% Create Statistics Export
+name = sprintf(name,string(date()));
 clc;
-fprintf(1,'--- <strong>NOTES</strong> ---\n\n');
-fprintf(1,'%s\n',NOTES);
-fprintf(1,'-- <strong>END NOTES</strong> --\n\n');
-fprintf(1,'--- <strong>MODEL</strong> ---\n\n');
-disp(glme);
-disp('<strong>R-squared:</strong>');
-disp(glme.Rsquared);
-fprintf(1,'\n-- <strong>END MODEL</strong> --\n\n');
-fprintf(1,'--- <strong>ANOVA</strong> ---\n');
-disp(anova(glme));
-fprintf(1,'\n-- <strong>END ANOVA</strong> --\n\n');
-pause(2);
-
-[~,raw,~] = command_window_text();
-fname_export = sprintf(REPORT_NAME_STRING,string(date()));
-if exist(fname_export,'file')~=0
-    delete(fname_export);
-end
-fid = fopen(fname_export,'w');
-fprintf(fid,'**GLME: %s**\n%s',string(date()),raw); 
-fclose(fid);
+exportStats(glme,name,NOTES);
 
 %% Make diagnostic plots
-fig = figure('Name','Fitted Residuals',...
-    'Color','w','PaperOrientation','portrait','PaperSize',[8.5 11],...
-    'PaperUnits','inches'); 
-plotResiduals(glme,'fitted');
-set(get(gca,'XLabel'),'FontName','Arial','FontSize',16,'Color','k');
-set(get(gca,'YLabel'),'FontName','Arial','FontSize',16,'Color','k');
-set(get(gca,'Title'),'FontName','Arial','FontSize',20,'Color','k','FontWeight','bold');
-set(gca,'LineWidth',1.5,'XColor','k','YColor','k');
+fig = plotFittedResiduals(glme);
 savefig(fig,fullfile(FIG_OUTPUT,'Figure 4 - Fitted Residuals.fig'));
 saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Fitted Residuals.eps'));
 saveas(fig,fullfile(FIG_OUTPUT,'Figure 4 - Fitted Residuals.png'));

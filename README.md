@@ -5,5 +5,7 @@ This folder contains code used in the manuscript:
 
 ## Contents ##
 
-### Figure 4 - Synaptophysin ###
-This folder contains scripts related to Figure 4 figures and statistics, which describe Synaptophysin image fluorescent intensities as a molecular indicator of synaptic expression.
+### m053m716 ###
+This folder contains Matlab  code contributed by @m053m716:
+* Scripts related to Figure 4 figures and statistics. This figure describes the Synaptophysin image fluorescent intensities, which serves as a molecular indicator of synaptic expression.
+* Scripts related to Mean Firing Rate (MFR) analyses assessing longitudinal trends in spike activity using Generalized Linear Mixed-Effects models.

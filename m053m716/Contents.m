@@ -5,6 +5,7 @@
 %   exportBarChart          - Export bar chart for Figure 4 by-area comparisons
 %   exportGroupedHistograms - EXPORTBARCHART Export bar chart for Figure 4 by-area comparisons
 %   exportHistogram         - Export histograms for Alberto's data.
+%   exportStats             - Function to compartmentalize scraping of Command Window output and generation of *.txt stats report
 %   exportSwarmChart        - Export swarm chart for Figure 4 by-area comparisons
 %   extractMetadata         - Get metadata from file name "header"
 %   findjobj                - findjobj Find java objects contained within a specified java container or Matlab GUI handle
