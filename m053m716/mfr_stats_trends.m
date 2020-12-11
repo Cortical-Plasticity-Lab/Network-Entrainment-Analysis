@@ -21,7 +21,7 @@ MFR_THRESH = [0.0025, 50]; % Bounds on activity
 
 % Statistical model parameters
 MFR_GLME_MODEL_RESPONSE = "LMFR";
-MFR_GLME_MODEL_SPEC = sprintf("%s~1+Treatment*Day*Epoch+(1+Day_Sigmoid+nPulses|Rat_ID)",MFR_GLME_MODEL_RESPONSE);
+MFR_GLME_MODEL_SPEC = sprintf("%s~1+Treatment*Day*Epoch+(1+Day+Day_Sigmoid+nPulses|Rat_ID)",MFR_GLME_MODEL_RESPONSE);
 MFR_GLME_DIST = 'normal';
 MFR_GLME_LINK = 'identity'; 
 MFR_GLME_FIT_METHOD = 'Laplace'; % 'REMPL' | 'Laplace' | 'ApproximateLaplace'
@@ -126,8 +126,8 @@ fig = exportTrendPlots(T,'Pre');
 default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Trends by Epoch - Pre'));
 
 fig = exportTrendPlots(T,'Stim');
-default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Trends by Epoch - Pre'));
+default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Trends by Epoch - Stim'));
 
 fig = exportTrendPlots(T,'Post');
-default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Trends by Epoch - Pre'));
+default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Trends by Epoch - Post'));
 
