@@ -1,0 +1,111 @@
+**GLME: 10-Dec-2020**
+--- <strong>NOTES</strong> ---
+
+Report generated on 10-Dec-2020 17:42:18
+
+	->	MFR Bounds: [ 0.10 < MFR <= 10.00] spikes/sec
+	->	Fitted residuals scatter:
+			Figures\MFR - GLME - Fitted Residualslog-log
+
+-- <strong>END NOTES</strong> --
+
+Observations outside the range  0.10 <= MFR < 10.00 spikes/sec are excluded.
+	->	Spike rates in non-excluded observations: [ 0.10 -  9.99] spikes/sec
+	->	Tabulated unique epoch/channel counts (observations) by Animal:
+			(Note: all columns should have identical counts based on exclusion strategy)
+
+        ID         Pre    Stim    Post
+    ___________    ___    ____    ____
+    R16-15(ADS)    547    547     547 
+    R16-21(RS)     639    639     639 
+    R16-25(ADS)    453    453     453 
+    R16-26(RS)     604    604     604 
+    R16-33(RS)     434    434     434 
+    R16-34(ADS)    377    377     377 
+    R17-40(ADS)    474    474     474 
+    R17-41(RS)     578    578     578 
+    R17-60(C)      563    563     563 
+    R17-62(ADS)    614    614     614 
+    R17-63(RS)     599    599     599 
+    R17-67(C)      802    802     802 
+
+
+-------------------------------------------------------
+
+Saved table locally to MFR_Table.mat ( 7.97 sec)
+Please wait, fitting GLME ("omega~1+Treatment*Epoch+(1+Day+Day_Sigmoid+nPulses|Rat_ID)")...saving locally ("GLME_MFR.mat")...complete (35.37 sec)
+--- MODEL ---
+
+Generalized linear mixed-effects model fit by PL
+
+Model information:
+    Number of observations           20049
+    Fixed effects coefficients           9
+    Random effects coefficients         48
+    Covariance parameters               11
+    Distribution                    Gamma 
+    Link                            Loglog
+    FitMethod                       REMPL 
+
+Formula:
+    omega ~ 1 + Treatment*Epoch + (1 + Day + nPulses + Day_Sigmoid | Rat_ID)
+
+Model fit statistics:
+    AIC                 BIC                 LogLikelihood        Deviance        
+    12643.0140754047    12801.1237865087    -6301.50703770237    12603.0140754047
+Fixed effects coefficients (95% CIs):
+    Name                                Estimate               SE                     tStat                 DF       pValue                  Lower               
+    {'(Intercept)'             }           1.02987622250311      0.106107054200364      9.70601087990224    20040    3.18154571450608e-22       0.821897656404617
+    {'Treatment_ADS'           }         -0.151850304697626      0.136069512485858     -1.11597595907759    20040       0.264445806464971      -0.418557756994726
+    {'Treatment_C'             }        -0.0258422123307962      0.175121594026413    -0.147567251625739    20040       0.882685786062305      -0.369094961103934
+    {'Epoch_Pre'               }        0.00294412798835689    0.00341600546278604     0.861862786939372    20040       0.388773341572226     -0.0037515240895274
+    {'Epoch_Stim'              }        -0.0118746583882848    0.00343978822280419     -3.45214810306092    20040    0.000557289764201178      -0.018616926634752
+    {'Treatment_ADS:Epoch_Pre' }        0.00426435861709256    0.00447276821853603      0.95340478395912    20040       0.340396517824923    -0.00450263550589413
+    {'Treatment_C:Epoch_Pre'   }        0.00845846618530888     0.0054081374338686      1.56402574615385    20040       0.117827312165641    -0.00214192864457323
+    {'Treatment_ADS:Epoch_Stim'}        0.00446386645052334    0.00450460687232735     0.990955831894168    20040       0.321719112436812    -0.00436553405639256
+    {'Treatment_C:Epoch_Stim'  }         0.0126405107948753    0.00544038717626507      2.32345794248291    20040      0.0201645177788324     0.00197690381353717
+
+    Upper               
+        1.23785478860159
+       0.114857147599474
+       0.317410536442341
+     0.00963978006624119
+    -0.00513239014181757
+      0.0130313527400792
+       0.019058861015191
+      0.0132932669574392
+      0.0233041177762134
+Random effects covariance parameters:
+Group: Rat_ID (12 Levels)
+    Name1                  Name2                  Type            Estimate            
+    {'(Intercept)'}        {'(Intercept)'}        {'std' }            1.28843828546661
+    {'Day'        }        {'(Intercept)'}        {'corr'}          -0.939384112529341
+    {'nPulses'    }        {'(Intercept)'}        {'corr'}           0.744524065482953
+    {'Day_Sigmoid'}        {'(Intercept)'}        {'corr'}          -0.284143734672435
+    {'Day'        }        {'Day'        }        {'std' }           0.746686372020775
+    {'nPulses'    }        {'Day'        }        {'corr'}          -0.898432232264885
+    {'Day_Sigmoid'}        {'Day'        }        {'corr'}           0.306736984523067
+    {'nPulses'    }        {'nPulses'    }        {'std' }        1.39819629497519e-05
+    {'Day_Sigmoid'}        {'nPulses'    }        {'corr'}          -0.126955761532034
+    {'Day_Sigmoid'}        {'Day_Sigmoid'}        {'std' }           0.648832058449767
+Group: Error
+    Name                        Estimate         
+    {'sqrt(Dispersion)'}        0.958404661632903
+R-squared:
+    Ordinary: 0.13219234344399
+    Adjusted: 0.131845913241772
+
+-- END MODEL --
+
+--- ANOVA ---
+
+    ANOVA marginal tests: DFMethod = 'residual'
+
+    Term                       FStat               DF1    DF2      pValue              
+    {'(Intercept)'    }        94.2066472007808    1      20040    3.18154571450606e-22
+    {'Treatment'      }        1.27163496353717    2      20040       0.280395470133989
+    {'Epoch'          }        6.46931864863385    2      20040     0.00155352129761931
+    {'Treatment:Epoch'}         11.001713668569    4      20040    6.53719088885931e-09
+
+-- END ANOVA --
+

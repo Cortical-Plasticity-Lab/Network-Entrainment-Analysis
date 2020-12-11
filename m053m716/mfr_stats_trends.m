@@ -10,22 +10,24 @@
 %  Window and window containing this script as wide as possible. This makes
 %  it less-likely that tables have columns kicked down to the next line.
 
-clc;
+close all force;
 clearvars -except T
+clc;
 
 %% CHANGE PARAMETERS HERE
 % % % Spike rate observations threshold % % %
-MFR_THRESH = 0.1;
+MFR_THRESH = [0.0025, 50]; % Bounds on activity
 % % % % % % % % % % % % % % % % % % % % % % %
 
 % Statistical model parameters
-MFR_GLME_MODEL_SPEC = "MFR~1+Treatment*Day*Epoch+(1+Day+nPulses|Rat_ID)";
-MFR_GLME_DIST = 'Gamma';
-MFR_GLME_LINK = -1; % Should correspond to canonical link for MFR_GLME_DIST
-MFR_GLME_FIT_METHOD = 'REMPL'; % 'REMPL' | 'Laplace' | 'ApproximateLaplace'
+MFR_GLME_MODEL_RESPONSE = "LMFR";
+MFR_GLME_MODEL_SPEC = sprintf("%s~1+Treatment*Day*Epoch+(1+Day_Sigmoid+nPulses|Rat_ID)",MFR_GLME_MODEL_RESPONSE);
+MFR_GLME_DIST = 'normal';
+MFR_GLME_LINK = 'identity'; 
+MFR_GLME_FIT_METHOD = 'Laplace'; % 'REMPL' | 'Laplace' | 'ApproximateLaplace'
 
-LOCAL_MODEL_NAME = "GLME_MFR.mat"; % Change this if altering models
-REPORT_TAG = "Basic"; % Change this to "tag" reports with fixed name prepended
+LOCAL_MODEL_NAME = "GLME_LMFR_log-normal_non-sigmoid-days.mat"; % Change this if altering models
+REPORT_TAG = "log-normal_non-sigmoid-days"; % Change this to "tag" reports with fixed name prepended
 
 % Data I/O parameters (probably won't change)
 MFR_SPREADSHEET_LONG_NAME = "Exports/FR_stats_C_long.xlsx";
@@ -36,7 +38,6 @@ FORCE_RELOAD = true;  % Set true to force to reload from file (for example to re
 FORCE_RERUN = true;   % Set true to force rerun of model estimator even if file is present
 REPORT_NAME = "Reports/GLME_FR_Stats_Export";
 FIGURE_FOLDER = 'Figures';
-FIGURE_NAME = 'MFR - GLME - Fitted Residuals';
 
 %% Import data (if needed)
 if exist('T','var')==0 || ~istable(T) || FORCE_RELOAD
@@ -60,6 +61,25 @@ if exist('T','var')==0 || ~istable(T) || FORCE_RELOAD
 else
    fprintf(1,'Found `T` in local workspace. Using existing table.\n');
 end
+
+%% Make figure of input distribution
+fig = plotInputDistribution(T.MFR,T.Properties.UserData.MFR_THRESH,'BinEdges',linspace(0,100,2001));
+default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Input Distribution'));
+
+fig = plotInputDistribution(T.SMFR,[min(T.SMFR(~T.Exclude)), max(T.SMFR(~T.Exclude))],...
+   'BinEdges',linspace(0,12,8001),'XLabel','MFR \surd(normalized spikes/sec)',...
+   'XScale','log');
+default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Input Distribution - SMFR'));
+
+fig = plotInputDistribution(T.LMFR,[min(T.LMFR(~T.Exclude)), max(T.LMFR(~T.Exclude))],...
+   'BinEdges',linspace(-8,6,8001),'XLabel','MFR log(normalized spikes/sec)',...
+   'XScale','linear');
+default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Input Distribution - LMFR'));
+
+fig = plotInputDistribution(T.omega,[min(T.omega(~T.Exclude)), max(T.omega(~T.Exclude))],...
+   'BinEdges',linspace(0,7,8001),'XLabel','\omega (normalized spikes/sec)',...
+   'XScale','log');
+default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Input Distribution - Omega'));
 
 %% Run statistical model
 tic;
@@ -85,9 +105,9 @@ else
 end
 
 %% Export generated report
-fname = fullfile(FIGURE_FOLDER,strcat(FIGURE_NAME,REPORT_TAG));
+fname = fullfile(FIGURE_FOLDER,strcat('MFR - GLME - Fitted Residuals',REPORT_TAG));
 notes = string(...
-         sprintf('Report generated on %s\n\n\t->\tMFR Threshold: %5.2f\n\t->\tFitted residuals scatter:\n\t\t\t%s\n',...
+         sprintf('Report generated on %s\n\n\t->\tMFR Bounds: [%5.2f < MFR <= %5.2f] spikes/sec\n\t->\tFitted residuals scatter:\n\t\t\t%s\n',...
             string(datetime()),T.Properties.UserData.MFR_THRESH,fname) ...
          );
 if REPORT_TAG~=""
@@ -99,7 +119,15 @@ exportStats(glme,name,notes);
 
 %% Generate diagnostic figures
 fig = plotFittedResiduals(glme);
-savefig(fig,strcat(fname,'.fig'));
-saveas(fig,strcat(fname,'.eps'));
-saveas(fig,strcat(fname,'.png'));
-delete(fig);
+default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Fitted Residuals'),REPORT_TAG);
+
+%% Generate summary figures
+fig = exportTrendPlots(T,'Pre');
+default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Trends by Epoch - Pre'));
+
+fig = exportTrendPlots(T,'Stim');
+default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Trends by Epoch - Pre'));
+
+fig = exportTrendPlots(T,'Post');
+default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Trends by Epoch - Pre'));
+

@@ -11,6 +11,14 @@ function T = importFRstats(workbookFile, sheetName, dataLines, MFR_THRESH)
 %  positive scalar integer or a N-by-2 array of positive scalar integers
 %  for dis-contiguous row intervals.
 %
+%  T = IMPORFRSTATS(FILE, SHEET, DATALINES, MFR_THRESH) 
+%  reads from the specified
+%  worksheet for the specified row interval(s). Specify DATALINES as a
+%  positive scalar integer or a N-by-2 array of positive scalar integers
+%  for dis-contiguous row intervals.
+%  Specify MFR_THRESH to set bounds on acceptable mean firing rate (default
+%  is [0.1, 10], spikes/sec).
+%
 %  Example:
 %  T = importFRstats("D:\Downloads\FR_stats_C_long.xlsx", "FR_stats_C_long", [2, 29434]);
 %
@@ -31,7 +39,7 @@ if nargin <= 2 || isempty(dataLines)
 end
 
 if nargin <= 3
-   MFR_THRESH = 0.1;
+   MFR_THRESH = [0.1, 10];
 end
 
 %% Set up the Import Options and import the data
@@ -61,7 +69,7 @@ c = (1:(size(T,1)/3))'; % Make "pseudo-ID" for each channel. Grouped as three-in
 T.Pseudo_Channel_ID = repelem(c,3,1);
 T.Properties.VariableNames{'Name'} = 'Rat_ID';
 T.Properties.VariableNames{'Time'} = 'Epoch';
-T.Exclude = T.MFR < MFR_THRESH; % Exclude any observations with MFR less than 0.1
+T.Exclude = (T.MFR <= MFR_THRESH(1)) | (T.MFR > MFR_THRESH(2)); % Exclude any observations with MFR outside of fixed bounds
 T.Epoch = ordinal(T.Epoch,{'Pre','Stim','Post'});
 T.Properties.VariableNames{'Stim'} = 'Treatment';
 % Need to recover the number of "SHAM" pulses in "CONTROL" group, use
@@ -85,7 +93,11 @@ T = outerjoin(T,TID,'Type','left','Keys',g,...
 T.N = round(T.MFR*60*60); % "scale to corresponding N of spikes"
 T.SMFR = sqrt(T.MFR); % square-root transformed MFR
 T.LMFR = log(T.MFR); % log-transformed MFR
+T.omega = T.MFR./(4*MFR_THRESH(2)); % "normalized" spike frequency, assuming there is a fixed upper bound on spike "sampling frequency"
 T.logPulses = log(T.nPulses);
+T.Day = T.Day + 5; % Postoperative recordings started on postoperative day 6.
+T.Day_Sigmoid = tanh((T.Day - 16)/5);
+
 % Move things so column order makes more sense:
 T = movevars(T,'logPulses','after','nPulses');
 T = movevars(T,{'LMFR','SMFR'},'after','MFR');
@@ -111,9 +123,15 @@ T.Properties.VariableDescriptions{'LMFR'} = 'log-transform applied to MFR';
 T.Properties.VariableUnits{'LMFR'} = 'log(spikes/second)';
 T.Properties.VariableDescriptions{'SMFR'} = 'Square-root transform applied to MFR';
 T.Properties.VariableUnits{'SMFR'} = 'sqrt(spikes/second)';
+T.Properties.VariableDescriptions{'omega'} = 'MFR divided by two times the upper-bound on rate';
+T.Properties.VariableUnits{'omega'} = 'normalized spike frequency';
 T.Properties.VariableDescriptions{'N'} = 'Expected integer value of spikes in 60-minutes given observed MFR';
 T.Properties.VariableUnits{'N'} = 'extrapolated spikes';
 T.Properties.VariableDescriptions{'Exclude'} = sprintf('Insufficient spike observations to include observation with confidence in underlying firing rate of process (true if MFR < %5.2f spikes/sec)',MFR_THRESH);
+
+T.Properties.RowNames = strcat(string(T.Rat_ID),"::",string(T.Treatment),...
+   "::D-",num2str(T.Day,'%02d'),...
+   "::Ch-",num2str(T.Pseudo_Channel_ID,'%04d'),"-",string(T.Epoch));
 
 % Do cross-tabulation
 T.Properties.UserData.MFR_THRESH = MFR_THRESH;
@@ -134,8 +152,8 @@ xTab.Properties.VariableUnits = {'',...
    'Unique Channel/Session Counts','Unique Channel/Session Counts','Unique Channel/Session Counts'};
 T.Properties.UserData.CrossTab.Data = xTab;
 
-fprintf(1,'Observations with MFR < <strong>%5.2f spikes/sec</strong> are excluded.\n',MFR_THRESH);
-fprintf(1,'\t->\tSpike rate range: [%5.2f - %5.2f] spikes/sec\n',min(T.MFR(~T.Exclude)),max(T.MFR(~T.Exclude)));
+fprintf(1,'Observations outside the range <strong>%5.2f <= MFR < %5.2f spikes/sec</strong> are excluded.\n',MFR_THRESH);
+fprintf(1,'\t->\tSpike rates in non-excluded observations: [%5.2f - %5.2f] spikes/sec\n',min(T.MFR(~T.Exclude)),max(T.MFR(~T.Exclude)));
 fprintf(1,'\t->\tTabulated unique epoch/channel counts (observations) by Animal:\n');
 fprintf(1,'\t\t\t<strong>(Note: all columns should have identical counts based on exclusion strategy)</strong>\n\n');
 disp(T.Properties.UserData.CrossTab.Data);
