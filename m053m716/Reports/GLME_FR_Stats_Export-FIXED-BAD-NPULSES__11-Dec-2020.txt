@@ -1,0 +1,139 @@
+**GLME: 11-Dec-2020**
+--- <strong>NOTES</strong> ---
+
+Report generated on 11-Dec-2020 18:27:43
+
+	->	MFR Bounds: [ 0.00 < MFR <= 50.00] spikes/sec
+	->	Fitted residuals scatter:
+			Figures\MFR - GLME - Fitted ResidualsFIXED-BAD-NPULSES
+
+-- <strong>END NOTES</strong> --
+
+Observations outside the range  0.00 <= MFR < 50.00 spikes/sec are excluded.
+	->	Spike rates in non-excluded observations: [ 0.00 - 49.29] spikes/sec
+	->	Tabulated unique epoch/channel counts (observations) by Animal:
+			(Note: all columns should have identical counts based on exclusion strategy)
+
+        ID         Pre    Stim    Post
+    ___________    ___    ____    ____
+    R16-15(ADS)    682    682     682 
+    R16-21(RS)     827    827     827 
+    R16-25(ADS)    549    549     549 
+    R16-26(RS)     969    969     969 
+    R16-33(RS)     674    674     674 
+    R16-34(ADS)    638    638     638 
+    R17-40(ADS)    747    747     747 
+    R17-41(RS)     846    846     846 
+    R17-60(C)      751    751     751 
+    R17-62(ADS)    901    901     901 
+    R17-63(RS)     966    966     966 
+    R17-67(C)      959    959     959 
+
+
+-------------------------------------------------------
+
+Saved table locally to MFR_Table.mat ( 6.79 sec)
+Please wait, fitting GLME ("LMFR~1+Treatment*Day*Epoch+(1+Day+Day_Sigmoid+nPulses*Epoch|Rat_ID)")...saving locally ("GLME_LMFR_log-normal_non-sigmoid-days.mat")...complete (281.07 sec)
+--- MODEL ---
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations           28524
+    Fixed effects coefficients          18
+    Random effects coefficients         96
+    Covariance parameters               37
+    Distribution                    Normal
+    Link                            Identity
+    FitMethod                       Laplace
+
+Formula:
+    LMFR ~ 1 + Treatment*Day + Treatment*Epoch + Day*Epoch + Treatment:Day:Epoch + (1 + Day + Day_Sigmoid + Epoch*nPulses | Rat_ID)
+
+Model fit statistics:
+    AIC                 BIC                 LogLikelihood        Deviance        
+    107072.138522562    107526.356084005    -53481.0692612809    106962.138522562
+Fixed effects coefficients (95% CIs):
+    Name                                    Estimate                 SE                     tStat                 DF       pValue                  Lower                   Upper               
+    {'(Intercept)'                 }             1.08022587865369      0.369483851039499      2.92360782647091    28506     0.00346272496390301       0.356020087992844        1.80443166931454
+    {'Treatment_ADS'               }            0.263244491748997      0.451079867952982     0.583587321118121    28506       0.559502609711131      -0.620893344053625        1.14738232755162
+    {'Treatment_C'                 }            0.188415973977721      0.639961208316359     0.294417804593835    28506       0.768440807219502       -1.06593820566267        1.44277015361811
+    {'Day'                         }          -0.0439464663104576      0.020334439309405     -2.16118407012736    28506      0.0306894229915547     -0.0838029273067418    -0.00409000531417336
+    {'Epoch_Pre'                   }           0.0902173707006413     0.0704416060909697      1.28073983128853    28506        0.20029548423563     -0.0478515026506794       0.228286244051962
+    {'Epoch_Stim'                  }            0.172708626014593     0.0474478153855134      3.63997003047106    28506    0.000273151749559571      0.0797086679386918       0.265708584090493
+    {'Treatment_ADS:Day'           }          -0.0201736849233164     0.0251652392900567    -0.801648841514792    28506       0.422762798675117     -0.0694987419344729      0.0291513720878401
+    {'Treatment_C:Day'             }           -0.019536202582323     0.0346330241235689    -0.564091732579251    28506       0.572696142125096     -0.0874185648231134      0.0483461596584674
+    {'Treatment_ADS:Epoch_Pre'     }           -0.198539937460072     0.0915730194406529     -2.16810517631498    28506      0.0301589307676041      -0.378027378550237     -0.0190524963699073
+    {'Treatment_C:Epoch_Pre'       }             0.19442959762257       0.11634150573552      1.67119719134948    28506       0.094693711547285     -0.0336052458782316       0.422464441123372
+    {'Treatment_ADS:Epoch_Stim'    }           0.0108833723277951     0.0622724220247003     0.174770339324176    28506       0.861261336593054      -0.111173514602137       0.132940259257728
+    {'Treatment_C:Epoch_Stim'      }            -0.11103416929975     0.0717647158284714     -1.54719722663069    28506       0.121826795604575      -0.251696400198045      0.0296280615985448
+    {'Day:Epoch_Pre'               }          -0.0089456108667346    0.00233866902150286     -3.82508631383249    28506     0.00013100473209045     -0.0135295125529559    -0.00436170918051326
+    {'Day:Epoch_Stim'              }        -0.000550288990438317    0.00234529033250763    -0.234635764626181    28506       0.814493133408255    -0.00514716875880839     0.00404659077793175
+    {'Treatment_ADS:Day:Epoch_Pre' }          0.00781578834105946    0.00311833676768912      2.50639649381149    28506      0.0122023990442273     0.00170370106569523      0.0139278756164237
+    {'Treatment_C:Day:Epoch_Pre'   }          -0.0125638716018796     0.0037275003285488      -3.3705889991889    28506    0.000751071889911237     -0.0198699482139713    -0.00525779498978791
+    {'Treatment_ADS:Day:Epoch_Stim'}          0.00251666226522388    0.00313111031946802     0.803760330505207    28506       0.421542106315497    -0.00362046177464186     0.00865378630508961
+    {'Treatment_C:Day:Epoch_Stim'  }        -0.000441594744451729    0.00373039684877931    -0.118377417297098    28506       0.905769452426731     -0.0077533486729344     0.00687015918403094
+Random effects covariance parameters:
+Group: Rat_ID (12 Levels)
+    Name1                         Name2                         Type            Estimate             
+    {'(Intercept)'       }        {'(Intercept)'       }        {'std' }             3.50044271542183
+    {'Day'               }        {'(Intercept)'       }        {'corr'}           -0.982706324286699
+    {'Epoch_Pre'         }        {'(Intercept)'       }        {'corr'}           -0.200290846405514
+    {'Epoch_Stim'        }        {'(Intercept)'       }        {'corr'}           0.0593241887388969
+    {'nPulses'           }        {'(Intercept)'       }        {'corr'}            0.421392174439518
+    {'Day_Sigmoid'       }        {'(Intercept)'       }        {'corr'}            0.909976655138713
+    {'Epoch_Pre:nPulses' }        {'(Intercept)'       }        {'corr'}                            0
+    {'Epoch_Stim:nPulses'}        {'(Intercept)'       }        {'corr'}           -0.421391614365518
+    {'Day'               }        {'Day'               }        {'std' }            0.211206232072186
+    {'Epoch_Pre'         }        {'Day'               }        {'corr'}            0.107736991646555
+    {'Epoch_Stim'        }        {'Day'               }        {'corr'}           0.0781041644099099
+    {'nPulses'           }        {'Day'               }        {'corr'}           -0.414464693546314
+    {'Day_Sigmoid'       }        {'Day'               }        {'corr'}           -0.945978099873114
+    {'Epoch_Pre:nPulses' }        {'Day'               }        {'corr'}                            0
+    {'Epoch_Stim:nPulses'}        {'Day'               }        {'corr'}            0.414459076709265
+    {'Epoch_Pre'         }        {'Epoch_Pre'         }        {'std' }            0.383875576908477
+    {'Epoch_Stim'        }        {'Epoch_Pre'         }        {'corr'}           -0.890148015564496
+    {'nPulses'           }        {'Epoch_Pre'         }        {'corr'}           -0.121454665254847
+    {'Day_Sigmoid'       }        {'Epoch_Pre'         }        {'corr'}            0.139258845298167
+    {'Epoch_Pre:nPulses' }        {'Epoch_Pre'         }        {'corr'}                            0
+    {'Epoch_Stim:nPulses'}        {'Epoch_Pre'         }        {'corr'}            0.121488621690512
+    {'Epoch_Stim'        }        {'Epoch_Stim'        }        {'std' }            0.463634748692428
+    {'nPulses'           }        {'Epoch_Stim'        }        {'corr'}            0.057132936046055
+    {'Day_Sigmoid'       }        {'Epoch_Stim'        }        {'corr'}           -0.291934172898786
+    {'Epoch_Pre:nPulses' }        {'Epoch_Stim'        }        {'corr'}                            0
+    {'Epoch_Stim:nPulses'}        {'Epoch_Stim'        }        {'corr'}          -0.0571711359727095
+    {'nPulses'           }        {'nPulses'           }        {'std' }            0.578245900577373
+    {'Day_Sigmoid'       }        {'nPulses'           }        {'corr'}            0.402011499066615
+    {'Epoch_Pre:nPulses' }        {'nPulses'           }        {'corr'}                            0
+    {'Epoch_Stim:nPulses'}        {'nPulses'           }        {'corr'}           -0.999999999260356
+    {'Day_Sigmoid'       }        {'Day_Sigmoid'       }        {'std' }             1.75320279180094
+    {'Epoch_Pre:nPulses' }        {'Day_Sigmoid'       }        {'corr'}                            0
+    {'Epoch_Stim:nPulses'}        {'Day_Sigmoid'       }        {'corr'}           -0.401998332599099
+    {'Epoch_Pre:nPulses' }        {'Epoch_Pre:nPulses' }        {'std' }             1.57128826564211
+    {'Epoch_Stim:nPulses'}        {'Epoch_Pre:nPulses' }        {'corr'}        -4.56821858327814e-10
+    {'Epoch_Stim:nPulses'}        {'Epoch_Stim:nPulses'}        {'std' }            0.578247206475232
+Group: Error
+    Name                        Estimate        
+    {'sqrt(Dispersion)'}        1.57128826564211
+R-squared:
+    Ordinary: 0.145049600851997
+    Adjusted: 0.144539737778065
+
+-- END MODEL --
+
+--- ANOVA ---
+
+    ANOVA marginal tests: DFMethod = 'residual'
+
+    Term                           FStat                DF1    DF2      pValue              
+    {'(Intercept)'        }         8.54748272300199    1      28506     0.00346272496390301
+    {'Treatment'          }        0.665204987577048    2      28506       0.514176100066951
+    {'Day'                }         4.67071658497225    1      28506      0.0306894229915547
+    {'Epoch'              }         8.75888620412625    2      28506    0.000157482532580567
+    {'Treatment:Day'      }         1.46361300645625    2      28506       0.231416106116887
+    {'Treatment:Epoch'    }         2.00844070316098    4      28506      0.0903799718910088
+    {'Day:Epoch'          }          10.404339314427    2      28506    3.04159411936818e-05
+    {'Treatment:Day:Epoch'}         4.47268772533427    4      28506     0.00129917458129179
+
+-- END ANOVA --
+

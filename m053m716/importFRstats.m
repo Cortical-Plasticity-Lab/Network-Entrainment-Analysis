@@ -79,8 +79,12 @@ uEpoch = unique(T.Epoch);
 iControl = T.Treatment=="C"; % Assign "C" number pulses based on corresponding means
 for ii = 1:numel(uEpoch)
    iEpoch = T.Epoch==uEpoch(ii);
-   nPulses_hat = nanmean(T.nPulses(iEpoch & iStim));
-   T.nPulses(iControl) = repmat(nPulses_hat,sum(iControl),1);
+   if uEpoch(ii)=="Stim"
+      nPulses_hat = nanmean(T.nPulses(iEpoch & iStim));
+      T.nPulses(iControl & iEpoch) = repmat(nPulses_hat,sum(iControl & iEpoch),1);
+   else
+      T.nPulses(iEpoch) = zeros(sum(iEpoch),1);
+   end
 end
 % Get unique groupings by rat, channel, day: 
 g = {'Rat_ID','Pseudo_Channel_ID','Day'};

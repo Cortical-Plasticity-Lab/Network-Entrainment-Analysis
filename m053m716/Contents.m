@@ -11,8 +11,10 @@
 %   exportBarChart          - Export bar chart for Figure 4 by-area comparisons
 %   exportGroupedHistograms - EXPORTBARCHART Export bar chart for Figure 4 by-area comparisons
 %   exportHistogram         - Export histograms for Alberto's data.
+%   exportMarginalTrendPlots- Export plots for longitudinal groupings by epoch using only marginal estimations for model fixed effects
 %   exportStats             - Function to compartmentalize scraping of Command Window output and generation of *.txt stats report
 %   exportSwarmChart        - Export swarm chart for Figure 4 by-area comparisons
+%   exportTrendPlots        - Export plots for longitudinal groupings by epoch
 %   plotFittedResiduals     - Generate fitted residuals plot for `fitglme` result
 %   plotInputDistribution   - Plot input distribution of x
 %
