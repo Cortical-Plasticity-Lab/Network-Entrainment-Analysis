@@ -99,6 +99,7 @@ T.SMFR = sqrt(T.MFR); % square-root transformed MFR
 T.LMFR = log(T.MFR); % log-transformed MFR
 T.omega = T.MFR./(4*MFR_THRESH(2)); % "normalized" spike frequency, assuming there is a fixed upper bound on spike "sampling frequency"
 T.logPulses = log(T.nPulses);
+T.logPulses(isinf(T.logPulses)) = 0; % So that it doesn't mess up the optimizer
 T.Day = T.Day + 5; % Postoperative recordings started on postoperative day 6.
 T.Day_Sigmoid = tanh((T.Day - 16)/5);
 

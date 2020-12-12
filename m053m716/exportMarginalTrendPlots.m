@@ -1,5 +1,5 @@
 function [fig,T_marg] = exportMarginalTrendPlots(glme,epoch)
-%EXPORTMARGINALTRENDPLOTS Export plots for longitudinal groupings by epoch using only marginal estimations for model fixed effects
+%EXPORTMARGINALTRENDPLOTS Export plots for longitudinal groupings by epoch using marginal estimations for model fixed effects with simulated # stim pulses for random effects
 %
 %  fig = exportMarginalTrendPlots(glme,epoch);
 %
@@ -17,25 +17,33 @@ function [fig,T_marg] = exportMarginalTrendPlots(glme,epoch)
 fig = default.figure(sprintf('%s Trend Boxplots',epoch),...
    'Position',[0.1 0.1 0.8 0.8]);
 T_marg = glme.Variables;
-[G,TID] = findgroups(T_marg(:,{'Treatment','Epoch'}));
-TID.nPulses = splitapply(@(x)round(nanmean(x)),T_marg.nPulses,G);
-T_marg = 
-
-T_marg.MFR = exp(predict(glme,glme.Variables,'Conditional',false));
 
 [G,TID] = findgroups(T_marg(:,{'Treatment','Day','Epoch'}));
-labels = strcat(string(TID.Treatment),":D-", ...
-            num2str(TID.Day,'%02d'),"_{",...
-            string(TID.Epoch),"}");
+TID.logPulses_Mean = splitapply(@(x)round(nanmean(x)),T_marg.logPulses,G);
+TID.logPulses_SD = splitapply(@(x)nanstd(x),T_marg.logPulses,G);
+TID.logPulses_Mean(TID.Epoch~="Stim") = 0;
+TID.logPulses_SD(TID.Epoch~="Stim") = 0;
+T_marg = outerjoin(T_marg,TID,...
+   'Type','left',...
+   'Keys',{'Treatment','Day','Epoch'},...
+   'LeftVariables',T_marg.Properties.VariableNames,...
+   'RightVariables',{'logPulses_Mean','logPulses_SD'});
+T_marg.logPulses = T_marg.logPulses_Mean + randn(size(T_marg,1),1).*T_marg.logPulses_SD;
+T_marg.MFR = exp(predict(glme,glme.Variables,'Conditional',true));
+
+% labels = strcat(string(TID.Treatment),":D-", ...
+%             num2str(TID.Day,'%02d'),"_{",...
+%             string(TID.Epoch),"}");
 groupings = {'C',epoch; ...
              'RS',epoch;...
              'ADS',epoch};
 names = {'Control (C)','Random (RS)','Activity-Dependent (ADS)'};
-          
+c = {'#846663';'#f10c0c';'#3e64fb'}; % Color codings
+
 k = size(groupings,1);
 mu = nan(1,k);
 sd = nan(1,k);
-
+fullDaysList = unique(getDayLabels(sort(T_marg.Day,'ascend')));
 for ii = 1:k
    ax = subplot(k,2,ii*2);
    iSel = find(TID.Treatment==string(groupings{ii,1}) & ...
@@ -48,19 +56,28 @@ for ii = 1:k
    [dayList,iSort] = sort(dayList,'ascend');
    
    allDays = getDayLabels(dayList);
+   uAllDays = unique(allDays);
+   missingDays = setdiff(fullDaysList,uAllDays);   
    data = data(iSort);
    
-   boxplot(ax,data,allDays);
+   if ~isempty(missingDays)
+      data = [data; nan(numel(missingDays),1)];
+      allDays = [allDays; missingDays];
+   end
+   COL = validatecolor(c{ii});
+   boxplot(ax,data,allDays,'GroupOrder',fullDaysList,'BoxStyle','filled','Colors',COL);
    title(ax,sprintf('%s: %s',groupings{ii,1},groupings{ii,2}),...
       'FontName','Arial','Color','k');
    ylabel(ax,'Daily MFR_{Marginal}','FontName','Arial','Color','k');
    set(ax,...
       'XTickLabelRotation',30,...
       'XTick',ax.XTick(1:2:end),...
+      'XTickLabels',uAllDays(1:2:end),...
       'LineWidth',1.5,...
       'FontName','Arial',...
       'FontSize',12,...
       'YLim',T_marg.Properties.UserData.MFR_THRESH,...
+      'YScale','log',...
       'YTick',[0.1 1 10] ...
       );
 end
@@ -74,11 +91,10 @@ set(ax,'XTick',1:k,...
    'FontWeight','bold',...
    'FontName','Arial',...
    'FontSize',13,...
-   'YLim',[0 15],...
-   'XAxisLocation','top',...
-   'YTick',[5 10]);
+   'YLim',[0 7],...
+   'XAxisLocation','top');
 
-c = {'#846663';'#f10c0c';'#3e64fb'};
+
 for ii = 1:k
    bar(ax,ii,mu(ii),'FaceColor',c{ii},'EdgeColor','k','LineWidth',1.25,...
       'DisplayName',string(names{ii}));
@@ -100,8 +116,8 @@ set(ax,'XLim',[5 27],...
    'FontSize',14,...
    'XColor','k',...
    'YColor','k',...
-   'YLim',[-5 15],...
-   'YTick',[-5  0  5  15],'FontName','Arial');
+   'YLim',[-5 10],...
+   'FontName','Arial');
 tSub = T_marg(~T_marg.Exclude,:);
 [G,TID] = findgroups(tSub(:,{'Rat_ID','Day','Epoch'}));
 [~,~,iURat] = unique(TID.Rat_ID);
@@ -111,25 +127,53 @@ TID.Day_Index = iUDay;
 [~,~,iUEpoc] = unique(TID.Epoch);
 TID.Epoch_Index = iUEpoc;
 
+Z = glme.designMatrix;
+iTerms = 15:18;
+ALPHA = 0.01;
 X = cell(3,21);
+T_marg.Properties.UserData.posthoc = struct(...
+   'p',cell(21,1),'F',cell(21,1),'DF1',cell(21,1),'DF2',cell(21,1));
+tmp = struct('p',{},'F',{},'DF1',{},'DF2',{});
+hTest = zeros(1,21);
+
 for ii = 1:numel(uDay)
+   iADS = find(T_marg.Treatment=="ADS" & T_marg.Day==uDay(ii) & string(T_marg.Epoch)==string(epoch),1,'first');
+   iRS = find(T_marg.Treatment=="RS" & T_marg.Day==uDay(ii) & string(T_marg.Epoch)==string(epoch),1,'first');
+   H = zeros(1,18);
+   H(iTerms) = Z(iADS,iTerms) - Z(iRS,iTerms);
+   if any(isnan(H))
+      tmp(1).p = nan;
+      tmp(1).F = nan;
+      tmp(1).DF1 = nan;
+      tmp(1).DF2 = nan;
+   else
+      [tmp(1).p,tmp(1).F,tmp(1).DF1,tmp(1).DF2] = coefTest(glme,H,0);
+      hTest(ii) = (tmp(1).p <= ALPHA);
+   end
+   T_marg.Properties.UserData.posthoc(ii) = tmp;
+   
    for ik = 1:k
       iSel = find(TID.Epoch==epoch & TID.Day_Index==ii);
       idx = ismember(G,iSel) & ismember(tSub.Treatment,string(groupings{ik,1}));
       X{ik,ii} = tSub.MFR(idx);
    end
 end
-
+T_marg.Properties.UserData.hTest.(epoch).result = hTest;
+T_marg.Properties.UserData.hTest.(epoch).note = sprintf('Compares ADS to RS by day for %s epoch.',epoch);
 
 for ii = 1:k
    gfx__.plotWithShadedError(ax,(6:26)',X(ii,:)',...
       'Smooth',true,'Tag',string(groupings{ii,1}),...
       'Color',c{ii},'FaceColor',c{ii},'FaceAlpha',0.25,'LineWidth',3);
 end
+line(ax,6:26,hTest.*7.5,'LineStyle','none','LineWidth',1,'Marker','*',...
+      'Color','k','MarkerIndices',find(hTest),...
+      'Tag','Post-Hoc Significance Test',...
+      'DisplayName','\alpha = 0.01 Difference between ADS and RS');
 % xlabel(ax,'Post-Op Day','FontName','Arial','Color','k');
 ylabel(ax,'MFR_{Marginal}','FontName','Arial','Color','k');
 title(ax,sprintf('Epoch[%s] Daily Trends by Treatment',epoch),'FontName','Arial','Color','k','FontWeight','bold');
-
+legend(ax,'FontName','Arial','TextColor','k','Location','south');
    function days_str = getDayLabels(days)
       days_str = strings(size(days));
       for iDay = 1:numel(days_str)
