@@ -30,6 +30,7 @@ T_marg = outerjoin(T_marg,TID,...
    'RightVariables',{'logPulses_Mean','logPulses_SD'});
 T_marg.logPulses = T_marg.logPulses_Mean + randn(size(T_marg,1),1).*T_marg.logPulses_SD;
 T_marg.MFR = exp(predict(glme,glme.Variables,'Conditional',true));
+T_marg.MFR_mrg = exp(predict(glme,glme.Variables,'Conditional',false));
 
 % labels = strcat(string(TID.Treatment),":D-", ...
 %             num2str(TID.Day,'%02d'),"_{",...
@@ -43,6 +44,7 @@ c = {'#846663';'#f10c0c';'#3e64fb'}; % Color codings
 k = size(groupings,1);
 mu = nan(1,k);
 sd = nan(1,k);
+mu2 = nan(size(mu));
 fullDaysList = unique(getDayLabels(sort(T_marg.Day,'ascend')));
 for ii = 1:k
    ax = subplot(k,2,ii*2);
@@ -51,6 +53,7 @@ for ii = 1:k
    idx = ismember(G,iSel) & ~T_marg.Exclude;
    mu(ii) = nanmean(T_marg.MFR(idx));
    sd(ii) = nanstd(T_marg.MFR(idx));
+   mu2(ii) = nanmean(T_marg.MFR_mrg(idx));
    data = T_marg.MFR(idx);
    dayList = T_marg.Day(idx);
    [dayList,iSort] = sort(dayList,'ascend');
@@ -96,8 +99,15 @@ set(ax,'XTick',1:k,...
 
 
 for ii = 1:k
-   bar(ax,ii,mu(ii),'FaceColor',c{ii},'EdgeColor','k','LineWidth',1.25,...
-      'DisplayName',string(names{ii}));
+   bar(ax,ii,mu(ii),'FaceColor',c{ii},'EdgeColor','k',...
+      'LineWidth',1.25,...
+      'DisplayName',string(names{ii}),...
+      'FaceAlpha',0.5,'EdgeAlpha',0.75);
+   hbar = bar(ax,ii,mu2(ii),...
+      'FaceColor',c{ii},'EdgeColor','none',...
+      'DisplayName',sprintf('Marginal Mean: %s',string(names{ii})),...
+      'FaceAlpha',0.5);
+   hbar.Annotation.LegendInformation.IconDisplayStyle = 'off';
 end
 errorbar(ax,1:k,mu,sd./2,sd./2,'LineStyle','none','LineWidth',1.5,...
    'DisplayName','1 STD');
