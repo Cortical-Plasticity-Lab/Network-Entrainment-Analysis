@@ -1,15 +1,15 @@
 **GLME: 14-Dec-2020**
 --- <strong>NOTES</strong> ---
 
-Report generated on 14-Dec-2020 15:02:03
+Report generated on 14-Dec-2020 15:23:15
 
 	->	MXC Bounds: [ 0.00 < MXC <=  1.00] 
 	->	Fitted residuals scatter:
-			Figures\IO-Corr - GLME - Fitted Residuals_LOG
+			Figures\IO-Corr - GLME - Fitted ResidualsLOG-MODEL
 
 -- <strong>END NOTES</strong> --
 
-Please wait, fitting GLME ("logMxc~1+Treatment*Day+(1+Day+Day_Sigmoid+logPulses|Rat_ID)")...saving locally ("GLME_LOG_IO-CORR.mat")...complete ( 8.56 sec)
+Please wait, fitting GLME ("logMxc~1+Treatment*Day+(1+Day_Sigmoid+Day+logPulses|Rat_ID)")...saving locally ("GLME_IO-CORR_LOG-MODEL.mat")...complete ( 4.81 sec)
 --- MODEL ---
 
 Generalized linear mixed-effects model fit by PL

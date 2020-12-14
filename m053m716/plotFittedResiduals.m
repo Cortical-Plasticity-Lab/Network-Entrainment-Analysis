@@ -11,11 +11,22 @@ function fig = plotFittedResiduals(glme)
 %
 % See also: Contents, main.m, mfr_stats_trends.m
 
-fig = default.figure('Fitted Residuals');
-plotResiduals(glme,'fitted');
-set(get(gca,'XLabel'),'FontName','Arial','FontSize',16,'Color','k');
-set(get(gca,'YLabel'),'FontName','Arial','FontSize',16,'Color','k');
-set(get(gca,'Title'),'FontName','Arial','FontSize',20,'Color','k','FontWeight','bold');
-set(gca,'LineWidth',1.5,'XColor','k','YColor','k');
+fig = default.figure('GLME Residuals','Width',0.6,'Height',0.4);
+[ax,x,y] = default.axes(subplot(1,2,1));
+plotResiduals(glme,'fitted','ResidualType','Pearson');
+set(x,'FontWeight','bold','Color','k');
+set(y,'FontWeight','bold','Color','k');
+
+f = glme.Fitted;
+r = glme.Residuals.Raw;
+idx = isoutlier(r);
+scatter(ax,f(idx),r(idx),'Marker','o','SizeData',14,'LineWidth',1.5,...
+   'Marker','o','MarkerFaceColor','none','MarkerEdgeColor','r',...
+   'DisplayName','Outlier');
+
+[~,x,y] = default.axes(subplot(1,2,2));
+plotResiduals(glme,'histogram','ResidualType','Pearson');
+set(x,'String','Residual','Color','k');
+set(y,'String','Bin Probability','Color','k');
 
 end

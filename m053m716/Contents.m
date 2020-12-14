@@ -21,6 +21,7 @@
 %   plotStimsByAnimal       - Return figure of stimulus random effect input distributions by rat.
 %
 % Functions (data i/o)
+%   data2timetable          - Convert data so that each row is a unique day
 %   extractMetadata         - Get metadata from file name "header"
 %   getExportName           - Checks this path for file, to prevent over-write of data
 %   getMaskedPixelData      - Get pixels masked by ROIs of interest

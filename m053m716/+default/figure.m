@@ -9,6 +9,7 @@ function fig = figure(name,varargin)
 %
 % Inputs
 %  name     - Name of figure ('Name' figure property)
+%              -> To skip, assign as empty value ([] or '' or "")
 %  varargin - 'Name',value keyword argument pairs for Matlab figure builtin
 %                 
 % Output
@@ -16,15 +17,17 @@ function fig = figure(name,varargin)
 %
 % See also: Contents, matlab.ui.Figure
 
+[pars,varargin] = parseInputs(varargin{:});
+
 if (nargin < 1) || isempty(name) || name==""
    name = "Untitled Figure";
 end
 
 r = groot;
 if size(r.MonitorPositions,1) > 1
-   pos = [1.2  0.22  0.29  0.39];
+   pos = [(pars.X + 1)  pars.Y  pars.Width  pars.Height];
 else
-   pos = [ 0.59  0.38  0.29  0.39];
+   pos = [pars.X  pars.Y  pars.Width  pars.Height];
 end
 pos(1:2) = pos(1:2) + randn(1,2).*0.0025; % Jitter figure position
 
@@ -37,5 +40,26 @@ fig = figure(...
    'PaperSize',[8.5 11],...
    'PaperUnits','inches',...
    varargin{:}); % Insert the rest as "Name",value keyword pairs
+
+   function [pars,varargin] = parseInputs(varargin)
+      %PARSEINPUTS Handle parsing of optional inputs for Axes labels
+      %
+      %  [pars,varargin] = parseInputs(varargin);
+      pars = struct;
+      pars.Height = 0.40;
+      pars.Width = 0.30;
+      pars.X = 0.2;
+      pars.Y = 0.25;
+      fn = fieldnames(pars);
+      rmVec = [];
+      for iV = 1:2:numel(varargin)
+         iArg = strcmpi(fn,varargin{iV});
+         if sum(iArg) == 1
+            pars.(fn{iArg}) = varargin{iV+1};
+            rmVec = [rmVec, iV, iV+1]; %#ok<AGROW>
+         end
+      end
+      varargin(rmVec) = [];
+   end
 
 end

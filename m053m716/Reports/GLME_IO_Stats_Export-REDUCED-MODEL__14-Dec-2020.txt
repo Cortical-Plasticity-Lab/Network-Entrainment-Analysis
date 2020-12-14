@@ -1,0 +1,76 @@
+**GLME: 14-Dec-2020**
+--- <strong>NOTES</strong> ---
+
+Report generated on 14-Dec-2020 15:12:39
+
+	->	MXC Bounds: [ 0.00 < MXC <=  1.00] 
+	->	Fitted residuals scatter:
+			Figures\IO-Corr - GLME - Fitted ResidualsREDUCED-MODEL
+
+-- <strong>END NOTES</strong> --
+
+Please wait, fitting GLME ("logMxc~1+Treatment*Day+(1+Day_Sigmoid+Day*logPulses|Rat_ID)")...saving locally ("GLME_LOG_IO-CORR_REDUCED-MODEL.mat")...complete (26.76 sec)
+--- MODEL ---
+
+Generalized linear mixed-effects model fit by PL
+
+Model information:
+    Number of observations            6629
+    Fixed effects coefficients           4
+    Random effects coefficients         50
+    Covariance parameters               16
+    Distribution                    Normal
+    Link                            Identity
+    FitMethod                       REMPL 
+
+Formula:
+    logMxc ~ 1 + Treatment*Day + (1 + Day_Sigmoid + Day*logPulses | Rat_ID)
+
+Model fit statistics:
+    AIC                 BIC                 LogLikelihood        Deviance        
+    23436.8752318546    23572.8473448717    -11698.4376159273    23396.8752318546
+Fixed effects coefficients (95% CIs):
+    Name                         Estimate               SE                     tStat                DF      pValue                  Lower                  Upper               
+    {'(Intercept)'      }           -4.7923946847216      0.356423798687488    -13.4457763549161    6625    1.10944316283747e-40      -5.49110014406793       -4.09368922537527
+    {'Treatment_ADS'    }          0.828413692811558      0.356423798687488     2.32423787598401    6625      0.0201428333850781      0.129708233465227        1.52711915215789
+    {'Day'              }        0.00645367323254582    0.00984123683281444    0.655778673167057    6625       0.511989312683248    -0.0128383210931098      0.0257456675582015
+    {'Treatment_ADS:Day'}        -0.0209931948708935    0.00984123683281444    -2.13318663370586    6625      0.0329460615449663    -0.0402851891965492    -0.00170120054523787
+Random effects covariance parameters:
+Group: Rat_ID (10 Levels)
+    Name1                    Name2                    Type            Estimate          
+    {'(Intercept)'  }        {'(Intercept)'  }        {'std' }           11.151027804563
+    {'Day_Sigmoid'  }        {'(Intercept)'  }        {'corr'}         0.841164526336398
+    {'Day'          }        {'(Intercept)'  }        {'corr'}        -0.886122353212401
+    {'logPulses'    }        {'(Intercept)'  }        {'corr'}        -0.985763475380502
+    {'Day:logPulses'}        {'(Intercept)'  }        {'corr'}         0.849287976244774
+    {'Day_Sigmoid'  }        {'Day_Sigmoid'  }        {'std' }          2.11381331309224
+    {'Day'          }        {'Day_Sigmoid'  }        {'corr'}        -0.844580811791704
+    {'logPulses'    }        {'Day_Sigmoid'  }        {'corr'}        -0.761870226550454
+    {'Day:logPulses'}        {'Day_Sigmoid'  }        {'corr'}         0.755370071433906
+    {'Day'          }        {'Day'          }        {'std' }         0.897503960526456
+    {'logPulses'    }        {'Day'          }        {'corr'}         0.858989397854831
+    {'Day:logPulses'}        {'Day'          }        {'corr'}         -0.98851185804565
+    {'logPulses'    }        {'logPulses'    }        {'std' }         0.858596922294276
+    {'Day:logPulses'}        {'logPulses'    }        {'corr'}        -0.841088648594088
+    {'Day:logPulses'}        {'Day:logPulses'}        {'std' }        0.0729509952298688
+Group: Error
+    Name                        Estimate        
+    {'sqrt(Dispersion)'}        1.39809060045638
+R-squared:
+    Ordinary: 0.33963269568656
+    Adjusted: 0.33933366143555
+
+-- END MODEL --
+
+--- ANOVA ---
+
+    ANOVA marginal tests: DFMethod = 'residual'
+
+    Term                     FStat                DF1    DF2     pValue              
+    {'(Intercept)'  }         180.788901786421    1      6625    1.10944316283747e-40
+    {'Treatment'    }         5.40208170415865    1      6625      0.0201428333850781
+    {'Day'          }        0.430045668180746    1      6625       0.511989312683248
+    {'Treatment:Day'}         4.55048521422132    1      6625      0.0329460615449663
+
+-- END ANOVA --
+
