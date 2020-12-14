@@ -5,6 +5,7 @@
 %
 % Scripts
 %   main                    - Main script for exporting stats on AA synaptophysin (round 2)
+%   iocorr_stat_trends      - Main script for exporting GLME statistical models for I/O Correlation results
 %   mfr_stats_trends        - Main script for exporting GLME statistical models for MFR
 %
 % Functions (graphics)
@@ -17,11 +18,14 @@
 %   exportTrendPlots        - Export plots for longitudinal groupings by epoch
 %   plotFittedResiduals     - Generate fitted residuals plot for `fitglme` result
 %   plotInputDistribution   - Plot input distribution of x
+%   plotStimsByAnimal       - Return figure of stimulus random effect input distributions by rat.
 %
 % Functions (data i/o)
 %   extractMetadata         - Get metadata from file name "header"
 %   getExportName           - Checks this path for file, to prevent over-write of data
 %   getMaskedPixelData      - Get pixels masked by ROIs of interest
+%   importFRstats           - Import data from a spreadsheet
+%   importIOstats           - Import IO Correlation data from spreadsheet
 %   ReadImageJROI           - ReadImageJROI - FUNCTION Read an ImageJ ROI into a matlab structure
 %   readJP2                 - READ JP2 FILE AND GET DIMENSIONS
 %   ROIs2Regions            - ROIs2Regions - FUNCTION Convert a set of imported ImageJ ROIs into a Matlab regions structure
