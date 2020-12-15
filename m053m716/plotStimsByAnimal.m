@@ -76,8 +76,7 @@ if isempty(pars.YLim)
 end
 
 for ii = 1:numel(obj)
-   set(obj(ii),'XLim',pars.XLim,'YLim',pars.YLim,...
-      'YTick',pars.YTick,'YTickLabels',pars.YTickLabels);
+   set(obj(ii),'XLim',pars.XLim,'YLim',pars.YLim);
    delete(obj(ii).Children);
    default.histogram(obj(ii),obj(ii).UserData,...
       'BinEdges',linspace(xl(1),xl(2),pars.NBins));
@@ -88,16 +87,16 @@ end
       %
       %  [pars,varargin] = parseInputs(varargin);
       pars = struct;
-      pars.NBins = 51;
+      pars.NBins = 21;
       pars.XLabel = 'Stimuli';
       pars.XLim = [];
-      pars.XScale = 'linear';
+      pars.XScale = 'log';
       pars.YLabel = 'Count (%s)';
-      pars.YLim = [0.1 1000];
-      pars.YScale = 'log';
-      pars.YTick = [1 10 100 1000];
-      tmpTick = sprintf('10^{%d}:',log10(pars.YTick));
-      pars.YTickLabels = strsplit(tmpTick(1:(end-1)),':');
+      pars.YLim = [0 500];
+      pars.YScale = 'linear';
+%       pars.YTick = [1 10 100 1000];
+%       tmpTick = sprintf('10^{%d}:',log10(pars.YTick));
+%       pars.YTickLabels = strsplit(tmpTick(1:(end-1)),':');
       fn = fieldnames(pars);
       rmVec = [];
       for iV = 1:2:numel(varargin)

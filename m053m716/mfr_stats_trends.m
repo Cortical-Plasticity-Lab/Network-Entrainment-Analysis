@@ -81,6 +81,11 @@ fig = plotInputDistribution(T.omega,[min(T.omega(~T.Exclude)), max(T.omega(~T.Ex
    'XScale','log');
 default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Input Distribution - Omega'));
 
+% Input stimuli distributions
+% [~,TID] = findgroups(T(:,{'Rat_ID','Treatment'}));
+% fig = plotStimsByAnimal(T.nPulses(~T.Exclude),T.Rat_ID(~T.Exclude),TID);
+% default.savefig(fig,fullfile(FIGURE_FOLDER,'Distribution of Stimuli by Rat'));
+
 %% Run statistical model
 tic;
 if exist(LOCAL_MODEL_NAME,'file')==0 || FORCE_RERUN
