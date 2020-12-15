@@ -85,6 +85,8 @@ default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Input Distribution - Om
 % [~,TID] = findgroups(T(:,{'Rat_ID','Treatment'}));
 % fig = plotStimsByAnimal(T.nPulses(~T.Exclude),T.Rat_ID(~T.Exclude),TID);
 % default.savefig(fig,fullfile(FIGURE_FOLDER,'Distribution of Stimuli by Rat'));
+% fig = plotPulsesByDay(T);
+% default.savefig(fig,fullfile(FIGURE_FOLDER,'Stimulus counts by Day'));
 
 %% Run statistical model
 tic;

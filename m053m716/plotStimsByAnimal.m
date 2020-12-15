@@ -31,9 +31,10 @@ else
 end
 nCol = 5; % 5 is maximum group size
 
-obj = [];
 xl = [inf, -inf];
 yl = [inf, -inf];
+
+TID.obj = cell(size(TID,1),1);
 
 for iG = 1:nRow
    inGroup = TID.Rat_ID(string(TID.Treatment) == groupings(iG));
@@ -61,7 +62,7 @@ for iG = 1:nRow
          xlabel(ax,pars.XLabel,...
             'FontName','Arial','FontSize',13,'FontWeight','bold');
       end
-      obj = [obj; ax]; %#ok<AGROW>
+      TID.obj{TID.Rat_ID == u(iU)} = ax;
       xl = [min(xl(1),ax.XLim(1)), max(xl(2),ax.XLim(2))];
       yl = [min(yl(1),ax.YLim(1)), max(yl(2),ax.YLim(2))];
    end 
@@ -75,11 +76,15 @@ if isempty(pars.YLim)
    pars.YLim = yl;
 end
 
-for ii = 1:numel(obj)
-   set(obj(ii),'XLim',pars.XLim,'YLim',pars.YLim);
-   delete(obj(ii).Children);
-   default.histogram(obj(ii),obj(ii).UserData,...
-      'BinEdges',linspace(xl(1),xl(2),pars.NBins));
+cols = default.Colors();
+
+for ii = 1:size(TID,1)
+   set(TID.obj{ii},'XLim',pars.XLim,'YLim',pars.YLim);
+   delete(TID.obj{ii}.Children);
+   default.histogram(TID.obj{ii},TID.obj{ii}.UserData,...
+      'BinEdges',linspace(xl(1),xl(2),pars.NBins),...
+      'FaceColor',cols.(string(TID.Treatment(ii))),...
+      'EdgeColor',cols.(string(TID.Treatment(ii))));
 end
 
    function [pars,varargin] = parseInputs(varargin)
@@ -94,9 +99,6 @@ end
       pars.YLabel = 'Count (%s)';
       pars.YLim = [0 500];
       pars.YScale = 'linear';
-%       pars.YTick = [1 10 100 1000];
-%       tmpTick = sprintf('10^{%d}:',log10(pars.YTick));
-%       pars.YTickLabels = strsplit(tmpTick(1:(end-1)),':');
       fn = fieldnames(pars);
       rmVec = [];
       for iV = 1:2:numel(varargin)

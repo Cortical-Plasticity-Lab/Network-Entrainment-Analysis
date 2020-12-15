@@ -18,6 +18,7 @@
 %   exportTrendPlots          - Export plots for longitudinal groupings by epoch
 %   plotFittedResiduals       - Generate fitted residuals plot for `fitglme` result
 %   plotInputDistribution     - Plot input distribution of x
+%   plotPulsesByDay           - Plot # stimulus pulses by day
 %   plotResponseStimsRelation - Make figure showing relation of stims and response
 %   plotStacked               - Return stacked time-series of response variate by animal
 %   plotStimsByAnimal         - Return figure of stimulus random effect input distributions by rat.
