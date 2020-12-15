@@ -34,8 +34,8 @@ MFR_SPREADSHEET_LONG_NAME = "Exports/FR_stats_C_long.xlsx";
 SPREADSHEET_SHEET = "FR_stats_C_long";
 SPREADSHEET_ROWS = [2, 29434];
 LOCAL_TABLE_NAME = "MFR_Table.mat";
-FORCE_RELOAD = true;  % Set true to force to reload from file (for example to regenerate with new MFR threshold)
-FORCE_RERUN = true;   % Set true to force rerun of model estimator even if file is present
+FORCE_RELOAD = false;  % Set true to force to reload from file (for example to regenerate with new MFR threshold)
+FORCE_RERUN = false;   % Set true to force rerun of model estimator even if file is present
 REPORT_NAME = "Reports/GLME_FR_Stats_Export";
 FIGURE_FOLDER = 'Figures';
 
@@ -86,14 +86,12 @@ tic;
 if exist(LOCAL_MODEL_NAME,'file')==0 || FORCE_RERUN
    fprintf(1,'Please wait, fitting GLME (<strong>"%s"</strong>)...',...
       MFR_GLME_MODEL_SPEC);
-%    warning('off','stats:classreg:regr:lmeutils:StandardGeneralizedLinearMixedModel:Message_PosteriorModeLineSearch'); 
    glme = fitglme(T,MFR_GLME_MODEL_SPEC,...
       'Distribution',MFR_GLME_DIST,...
       'Link',MFR_GLME_LINK,...
       'Exclude',T.Exclude,...
       'FitMethod',MFR_GLME_FIT_METHOD,...
       'DummyVarCoding','effects'); 
-%    warning('on','stats:classreg:regr:lmeutils:StandardGeneralizedLinearMixedModel:Message_PosteriorModeLineSearch');
    fprintf(1,'saving locally (<strong>"%s"</strong>)...',LOCAL_MODEL_NAME);
    save(LOCAL_MODEL_NAME,'glme','-v7.3');
    fprintf(1,'complete (%5.2f sec)\n',toc);
@@ -142,3 +140,6 @@ default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - MARGINAL-GLME - Trends by Epoc
 fig = exportMarginalTrendPlots(glme,'Post');
 default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - MARGINAL-GLME - Trends by Epoch - Post'));
 
+%% Get dependence on number of stimuli
+fig = plotResponseStimsRelation(glme);
+default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - MARGINAL-GLME - Stim-Response Relations - Stim'));

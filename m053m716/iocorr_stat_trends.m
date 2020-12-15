@@ -61,10 +61,10 @@ T = importIOstats(IO_SPREADSHEET_LONG_NAME, SPREADSHEET_SHEET, SPREADSHEET_ROWS,
 % [~,TID] = findgroups(T(:,{'Rat_ID','Treatment'}));
 % fig = plotStimsByAnimal(T.logPulses(~T.Exclude),T.Rat_ID(~T.Exclude),TID);
 % default.savefig(fig,fullfile(FIGURE_FOLDER,'Distribution of Stimuli by Rat'),REPORT_TAG);
-
-TT = data2timetable(T);
-fig = plotStacked(TT); % Plot stacked T.Mxc means
-default.savefig(fig,fullfile(FIGURE_FOLDER,'Mean Mxc by Rat'),REPORT_TAG);
+% 
+% TT = data2timetable(T);
+% fig = plotStacked(TT); % Plot stacked T.Mxc means
+% default.savefig(fig,fullfile(FIGURE_FOLDER,'Mean Mxc by Rat'),REPORT_TAG);
 
 %% Run statistical model
 tic;

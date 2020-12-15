@@ -34,10 +34,7 @@ end
       %
       %  [pars,varargin] = parseInputs(varargin);
       pars = struct;
-      pars.Color = struct(...
-         'ADS','#4274d6',...
-         'RS','#e65032',...
-         'C','#000000');
+      pars.Color = default.Colors();
       pars.YLim = [0 0.125];
       fn = fieldnames(pars);
       rmVec = [];

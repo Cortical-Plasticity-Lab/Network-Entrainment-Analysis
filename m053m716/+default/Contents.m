@@ -16,3 +16,6 @@
 %   histogram                 - Return default histogram object for given axes and data
 %   legend                    - Return default Legend object handle
 %   line                      - Returns default line primitive object handle
+%
+% Parameters
+%   Colors                    - Return default colors struct

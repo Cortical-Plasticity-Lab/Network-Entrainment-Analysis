@@ -94,11 +94,11 @@ ax = axes(fig,...
       %
       %  [pars,varargin] = parseInputs(varargin);
       pars = struct;
-      pars.Height = 0.70;
+      pars.Height = 0.75;
       pars.Width = 0.75;
-      pars.X = 0.20; % X-position
+      pars.X = 0.15; % X-position
       pars.XLabel = 'Untitled-X';
-      pars.Y = 0.20; % Y-position
+      pars.Y = 0.15; % Y-position
       pars.YLabel = 'Untitled-Y';
       pars.Title  = 'Untitled';
       fn = fieldnames(pars);
