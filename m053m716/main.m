@@ -28,7 +28,7 @@ NOTES = sprintf(strcat("06-Dec-2020\n", ...
                   
 %% (other configuration variables)
 EXPORT_NAME = sprintf('Exports/IntensityStatsTable__%s',string(date()));
-REPORT_NAME_STRING = 'Reports/GLME_Report__%s.txt';
+REPORT_NAME_STRING = 'Reports/GLME_Report_Synaptophysin__%s.txt';
 FIG_OUTPUT = 'Figures';
 
 %% AGGREGATE THE DATA
@@ -86,7 +86,7 @@ glme = fitglme(T,'Value~1+Group*Hemisphere*Area+(1+Hemisphere*Area|Name)',...
 fprintf(1,'complete (%5.2f sec)\n',toc);
 
 %% Create Statistics Export
-name = sprintf(name,string(date()));
+name = sprintf(REPORT_NAME_STRING,string(date()));
 clc;
 exportStats(glme,name,NOTES);
 

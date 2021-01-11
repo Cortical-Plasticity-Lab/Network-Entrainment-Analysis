@@ -167,6 +167,10 @@ else
    ly = y - err;
 end
 
+if pars.Smooth
+   uy = sgolayfilt(uy,3,7);
+end
+
 pY = [uy, fliplr(ly), uy(1)];
 pX = [x, fliplr(x), x(1)];
 

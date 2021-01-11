@@ -20,13 +20,13 @@ MXC_THRESH = exp([-7.4 0]); % [lower, upper] bounds on Mxc (upper-bound of zero 
 
 % Statistical model parameters
 IO_GLME_MODEL_RESPONSE = "logMxc";
-IO_GLME_MODEL_SPEC = sprintf("%s~1+Treatment*Day+(1+Day_Sigmoid+Day+logPulses|Rat_ID)",IO_GLME_MODEL_RESPONSE);
+IO_GLME_MODEL_SPEC = sprintf("%s~1+Treatment*Day+(1+Day+logPulses|Rat_ID)",IO_GLME_MODEL_RESPONSE);
 IO_GLME_DIST = 'normal';
 IO_GLME_LINK = 'identity'; 
 IO_GLME_FIT_METHOD = 'REMPL'; % 'REMPL' | 'Laplace' | 'ApproximateLaplace'
 
-LOCAL_MODEL_NAME = "GLME_IO-CORR_LOG-MODEL.mat"; % Change this if altering models
-REPORT_TAG = "LOG-MODEL"; % Change this to "tag" reports with fixed name prepended
+LOCAL_MODEL_NAME = "GLME_IO-CORR.mat"; % Change this if altering models
+REPORT_TAG = "FINAL"; % Change this to "tag" reports with fixed name prepended
 
 % Data I/O parameters (probably won't change, except
 %  IO_SPREADSHEET_LONG_NAME): 
@@ -51,12 +51,12 @@ T = importIOstats(IO_SPREADSHEET_LONG_NAME, SPREADSHEET_SHEET, SPREADSHEET_ROWS,
 %    'BinEdges',linspace(0,0.2,101),'XScale','log',...
 %    'XLabel','C_{max}');
 % default.savefig(fig,fullfile(FIGURE_FOLDER,'IO - GLME - Mxc Input Distribution - Log-Inset'));
-% 
-% fig = plotInputDistribution(T.logMxc,log(T.Properties.UserData.MXC_THRESH),...
-%    'BinEdges',linspace(-12,0,1001),'XScale','linear',...
-%    'XLabel','log(C_{max})');
-% default.savefig(fig,fullfile(FIGURE_FOLDER,'IO - GLME - LOG-Mxc Input Distribution'));
-% 
+
+fig = plotInputDistribution(T.logMxc,log(T.Properties.UserData.MXC_THRESH),...
+   'BinEdges',linspace(-12,0,1001),'XScale','linear',...
+   'XLabel','log(C_{max})');
+default.savefig(fig,fullfile(FIGURE_FOLDER,'IO - GLME - LOG-Mxc Input Distribution'));
+
 % Input stimuli distributions
 % [~,TID] = findgroups(T(:,{'Rat_ID','Treatment'}));
 % fig = plotStimsByAnimal(T.nPulses(~T.Exclude),T.Rat_ID(~T.Exclude),TID);
@@ -91,7 +91,7 @@ end
 %% Export generated report
 fname = fullfile(FIGURE_FOLDER,strcat('IO-Corr - GLME - Fitted Residuals',REPORT_TAG));
 notes = string(...
-         sprintf('Report generated on %s\n\n\t->\tMXC Bounds: [%5.2f < MXC <= %5.2f] \n\t->\tFitted residuals scatter:\n\t\t\t%s\n',...
+         sprintf('Report generated on %s\n\n\t->\tMXC Bounds: [%6.4f < MXC <= %6.4f] \n\t->\tFitted residuals scatter:\n\t\t\t%s\n',...
             string(datetime()),T.Properties.UserData.MXC_THRESH,fname) ...
          );
 if REPORT_TAG~=""
@@ -155,5 +155,14 @@ end
 exportStats(glme2,name,notes);
 
 %% Generate diagnostic figures
+T.Epoch = repmat("Stim",size(T,1),1);
 fig = plotFittedResiduals(glme2);
 default.savefig(fig,fullfile(FIGURE_FOLDER,'IO-Corr - GLME - Residuals after refit'),REPORT_TAG);
+
+%% Generate trend plot (STIM-only)
+fig = exportTrendPlots(T,'Stim',glme2.ResponseName);
+default.savefig(fig,fullfile(FIGURE_FOLDER,'IOCorr - GLME'));
+
+%% Random Effects
+data = printRandomEffects(glme);
+writetable(data,'GLME-Mxc_Random-Effects.xlsx');

@@ -1,0 +1,80 @@
+**GLME: 07-Jan-2021**
+--- <strong>NOTES</strong> ---
+
+06-Dec-2020
+	Switched from log(Poisson) to inverse-link Gamma.
+	Changed DummyVarCoding from 'reference' to 'effects'.
+
+-- <strong>END NOTES</strong> --
+
+--- MODEL ---
+
+Generalized linear mixed-effects model fit by PL
+
+Model information:
+    Number of observations          220000
+    Fixed effects coefficients          12
+    Random effects coefficients         44
+    Covariance parameters               11
+    Distribution                    Gamma 
+    Link                            Power 
+    FitMethod                       REMPL 
+
+Formula:
+    Value ~ 1 + Group*Hemisphere + Group*Area + Hemisphere*Area + Group:Hemisphere:Area + (1 + Hemisphere*Area | Name)
+
+Model fit statistics:
+    AIC                  BIC                  LogLikelihood       Deviance         
+    -1352203.64884118    -1351966.71829078    676124.824420592    -1352249.64884118
+Fixed effects coefficients (95% CIs):
+    Name                                        Estimate                 SE                      tStat                 DF        pValue                  Lower                    Upper               
+    {'(Intercept)'                     }            0.036496036964356     0.00163685530439861      22.2964344290437    219988    5.3026510924684e-110       0.0332878418684788      0.0397042320602332
+    {'Group_ADS'                       }          0.00106003455356265     0.00195643222327578     0.541820228143534    219988       0.587942903693205     -0.00277452323982492     0.00489459234695021
+    {'Group_RS'                        }           0.0012903887584189     0.00195643308052488     0.659561919732365    219988       0.509535688568723     -0.00254417071515528     0.00512494823199308
+    {'Hemisphere_LH'                   }        -0.000936724808605386    0.000991040179395921    -0.945193573459714    219988       0.344561097837269     -0.00287913855453108     0.00100568893732031
+    {'Area_RFA'                        }         0.000685466871840705     0.00122203204317309     0.560923811834623    219988       0.574850047732742     -0.00170968509875643     0.00308061884243784
+    {'Group_ADS:Hemisphere_LH'         }         -0.00191483777480578     0.00118454589415845      -1.6165163243136    219988       0.105984160631973     -0.00423651783917582    0.000406842289564248
+    {'Group_RS:Hemisphere_LH'          }          0.00163294388219318     0.00118454726560073       1.3785383915137    219988       0.168038524792559    -0.000688738870169114     0.00395462663455547
+    {'Group_ADS:Area_RFA'              }         0.000224373915685529     0.00146062900372195     0.153614583247206    219988       0.877913778546028     -0.00263842207736555      0.0030871699087366
+    {'Group_RS:Area_RFA'               }        -0.000606776634942531     0.00146063013248786    -0.415421140127392    219988       0.677834038766392     -0.00346957484034632     0.00225602157046126
+    {'Hemisphere_LH:Area_RFA'          }         0.000255555515087679    0.000875235183100095     0.291984965895107    219988       0.770298394137785     -0.00145988336006234      0.0019709943902377
+    {'Group_ADS:Hemisphere_LH:Area_RFA'}          0.00287125091070805     0.00104613591743923      2.74462511308895    219988     0.00605849701139367     0.000820850908380045     0.00492165091303605
+    {'Group_RS:Hemisphere_LH:Area_RFA' }         -0.00166054858859385      0.0010461375229824     -1.58731385894643    219988       0.112443015018805     -0.00371095173774596    0.000389854560558257
+Random effects covariance parameters:
+Group: Name (11 Levels)
+    Name1                             Name2                             Type            Estimate           
+    {'(Intercept)'           }        {'(Intercept)'           }        {'std' }        0.00414949041043321
+    {'Hemisphere_LH'         }        {'(Intercept)'           }        {'corr'}         0.0443858271564476
+    {'Area_RFA'              }        {'(Intercept)'           }        {'corr'}         -0.337100371087304
+    {'Hemisphere_LH:Area_RFA'}        {'(Intercept)'           }        {'corr'}          -0.41424403911142
+    {'Hemisphere_LH'         }        {'Hemisphere_LH'         }        {'std' }        0.00251159702902656
+    {'Area_RFA'              }        {'Hemisphere_LH'         }        {'corr'}          0.551372819504144
+    {'Hemisphere_LH:Area_RFA'}        {'Hemisphere_LH'         }        {'corr'}          0.323054509165925
+    {'Area_RFA'              }        {'Area_RFA'              }        {'std' }        0.00309748542919156
+    {'Hemisphere_LH:Area_RFA'}        {'Area_RFA'              }        {'corr'}          0.120548254604247
+    {'Hemisphere_LH:Area_RFA'}        {'Hemisphere_LH:Area_RFA'}        {'std' }        0.00221782570100921
+Group: Error
+    Name                        Estimate        
+    {'sqrt(Dispersion)'}        0.30364393895508
+R-squared:
+    Ordinary: 0.225818348914277
+    Adjusted: 0.225779637720203
+
+-- END MODEL --
+
+--- ANOVA ---
+
+    ANOVA marginal tests: DFMethod = 'residual'
+
+    Term                             FStat                DF1    DF2       pValue               
+    {'(Intercept)'          }         497.130988248647    1      219988    5.30265109246901e-110
+    {'Group'                }        0.331888248174997    2      219988        0.717567867093578
+    {'Hemisphere'           }        0.893390891309543    1      219988        0.344561097837269
+    {'Area'                 }        0.314635522683084    1      219988        0.574850047732742
+    {'Group:Hemisphere'     }         2.50437196123407    2      219988       0.0817292395928116
+    {'Group:Area'           }        0.105517381078591    2      219988        0.899858877719103
+    {'Hemisphere:Area'      }        0.085255220308767    1      219988        0.770298394137785
+    {'Group:Hemisphere:Area'}          5.5164180454041    2      219988      0.00402077857319768
+
+-- END ANOVA --
+

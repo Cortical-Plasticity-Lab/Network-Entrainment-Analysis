@@ -1,0 +1,119 @@
+**GLME: 30-Dec-2020**
+--- <strong>NOTES</strong> ---
+
+Report generated on 30-Dec-2020 12:14:22
+
+	->	MFR Bounds: [0.0025 < MFR <= 50.0000] spikes/sec
+	->	Fitted residuals scatter:
+			Figures\MFR - GLME - Fitted ResidualsFIXED-BAD-NPULSES
+
+-- <strong>END NOTES</strong> --
+
+
+GLME stats report export complete.
+	->	Contents in: Reports\GLME_FR_Stats_Export-FIXED-BAD-NPULSES__30-Dec-2020.txt
+
+--- MODEL ---
+
+Generalized linear mixed-effects model fit by ML
+
+Model information:
+    Number of observations           28524
+    Fixed effects coefficients          18
+    Random effects coefficients         96
+    Covariance parameters               37
+    Distribution                    Normal
+    Link                            Identity
+    FitMethod                       Laplace
+
+Formula:
+    LMFR ~ 1 + Treatment*Day + Treatment*Epoch + Day*Epoch + Treatment:Day:Epoch + (1 + Day + Day_Sigmoid + Epoch*logPulses | Rat_ID)
+
+Model fit statistics:
+    AIC                BIC                 LogLikelihood       Deviance       
+    107055.66672311    107509.884284553    -53472.833361555    106945.66672311
+Fixed effects coefficients (95% CIs):
+    Name                                    Estimate                 SE                     tStat                 DF       pValue                  Lower                   Upper               
+    {'(Intercept)'                 }            0.918521943329847      0.248393088651536      3.69785628221894    28506    0.000217835696676004        0.43165976341188        1.40538412324781
+    {'Treatment_ADS'               }            -0.24531695497055      0.319311176066034    -0.768269241286493    28506       0.442333608762391      -0.871181934127722       0.380548024186622
+    {'Treatment_C'                 }             0.38069749399889      0.406139181983283     0.937357218626002    28506       0.348582780765099      -0.415354475739595        1.17674946373738
+    {'Day'                         }           -0.041770222744699     0.0147320632375565     -2.83532741281031    28506     0.00458109591857479      -0.070645762162739     -0.0128946833266591
+    {'Epoch_Pre'                   }            0.118006239481966     0.0480144258594241      2.45772468106696    28506      0.0139879400119735      0.0238956981286076       0.212116780835325
+    {'Epoch_Stim'                  }              0.1080258469172     0.0497991646915458      2.16923009826185    28506      0.0300734560335423      0.0104171331987883       0.205634560635612
+    {'Treatment_ADS:Day'           }         -0.00996082484642879     0.0189153402875311    -0.526600351620157    28506       0.598475245096163     -0.0470357847668991      0.0271141350740416
+    {'Treatment_C:Day'             }          -0.0231380964750107     0.0241228168729183    -0.959178880182393    28506       0.337476773279631     -0.0704199563378146      0.0241437633877931
+    {'Treatment_ADS:Epoch_Pre'     }           -0.153807561764627      0.064193519774489     -2.39599826127234    28506      0.0165815747017136      -0.279629890975483     -0.0279852325537711
+    {'Treatment_C:Epoch_Pre'       }            0.162173887040211     0.0770426832868292      2.10498752277927    28506       0.035301122068314       0.011166590760821         0.3131811833196
+    {'Treatment_ADS:Epoch_Stim'    }           -0.034765197508234     0.0639190985376515    -0.543893739173365    28506       0.586518851222565      -0.160049648139989      0.0905192531235205
+    {'Treatment_C:Epoch_Stim'      }          -0.0397787852461937     0.0796139850697244    -0.499645699324764    28506       0.617328429901349       -0.19582595440628       0.116268383913892
+    {'Day:Epoch_Pre'               }         -0.00875593909475385    0.00233615390936544     -3.74801465761825    28506     0.00017859148308279     -0.0133349110424522    -0.00417696714705547
+    {'Day:Epoch_Stim'              }        -0.000889583104228749    0.00234246894671605    -0.379763029719507    28506        0.70412415704113    -0.00548093282325511     0.00370176661479761
+    {'Treatment_ADS:Day:Epoch_Pre' }          0.00802979085013585    0.00311769382754495      2.57555465491587    28506      0.0100129359510152     0.00191896376780617      0.0141406179324655
+    {'Treatment_C:Day:Epoch_Pre'   }          -0.0123288728468144    0.00372497741765903     -3.30978458778484    28506    0.000934835852517305     -0.0196300044344604    -0.00502774125916846
+    {'Treatment_ADS:Day:Epoch_Stim'}          0.00200905355666481    0.00313564029214713     0.640715569861845    28506       0.521712646831085     -0.0041369494435033     0.00815505655683291
+    {'Treatment_C:Day:Epoch_Stim'  }        -0.000569024651638556    0.00372883598632061    -0.152601147845078    28506       0.878713899795612    -0.00787771921601684     0.00673966991273973
+Random effects covariance parameters:
+Group: Rat_ID (12 Levels)
+    Name1                           Name2                           Type            Estimate             
+    {'(Intercept)'         }        {'(Intercept)'         }        {'std' }             1.85681617315284
+    {'Day'                 }        {'(Intercept)'         }        {'corr'}           -0.982080819409282
+    {'Epoch_Pre'           }        {'(Intercept)'         }        {'corr'}            0.688539362708721
+    {'Epoch_Stim'          }        {'(Intercept)'         }        {'corr'}           -0.762264600654128
+    {'logPulses'           }        {'(Intercept)'         }        {'corr'}              0.1180908308631
+    {'Day_Sigmoid'         }        {'(Intercept)'         }        {'corr'}            0.903868661707188
+    {'Epoch_Pre:logPulses' }        {'(Intercept)'         }        {'corr'}         1.77635683940025e-15
+    {'Epoch_Stim:logPulses'}        {'(Intercept)'         }        {'corr'}            0.118140179453005
+    {'Day'                 }        {'Day'                 }        {'std' }            0.161926148456033
+    {'Epoch_Pre'           }        {'Day'                 }        {'corr'}           -0.767193875765039
+    {'Epoch_Stim'          }        {'Day'                 }        {'corr'}            0.830146726426641
+    {'logPulses'           }        {'Day'                 }        {'corr'}           -0.130102460153634
+    {'Day_Sigmoid'         }        {'Day'                 }        {'corr'}            -0.95804214232398
+    {'Epoch_Pre:logPulses' }        {'Day'                 }        {'corr'}        -1.77635683940025e-15
+    {'Epoch_Stim:logPulses'}        {'Day'                 }        {'corr'}           -0.130156125594541
+    {'Epoch_Pre'           }        {'Epoch_Pre'           }        {'std' }            0.922011555727706
+    {'Epoch_Stim'          }        {'Epoch_Pre'           }        {'corr'}           -0.989508968882773
+    {'logPulses'           }        {'Epoch_Pre'           }        {'corr'}             0.16107858309779
+    {'Day_Sigmoid'         }        {'Epoch_Pre'           }        {'corr'}            0.851679624803028
+    {'Epoch_Pre:logPulses' }        {'Epoch_Pre'           }        {'corr'}         6.66133814775094e-16
+    {'Epoch_Stim:logPulses'}        {'Epoch_Pre'           }        {'corr'}             0.16114285880832
+    {'Epoch_Stim'          }        {'Epoch_Stim'          }        {'std' }             1.78267249073916
+    {'logPulses'           }        {'Epoch_Stim'          }        {'corr'}           -0.161569416077306
+    {'Day_Sigmoid'         }        {'Epoch_Stim'          }        {'corr'}           -0.893027857663819
+    {'Epoch_Pre:logPulses' }        {'Epoch_Stim'          }        {'corr'}        -8.32667268468868e-16
+    {'Epoch_Stim:logPulses'}        {'Epoch_Stim'          }        {'corr'}           -0.161634848355598
+    {'logPulses'           }        {'logPulses'           }        {'std' }            0.796673476658329
+    {'Day_Sigmoid'         }        {'logPulses'           }        {'corr'}           0.0963038036237957
+    {'Epoch_Pre:logPulses' }        {'logPulses'           }        {'corr'}         1.11022302462516e-15
+    {'Epoch_Stim:logPulses'}        {'logPulses'           }        {'corr'}           -0.947610380541604
+    {'Day_Sigmoid'         }        {'Day_Sigmoid'         }        {'std' }             1.49416341561817
+    {'Epoch_Pre:logPulses' }        {'Day_Sigmoid'         }        {'corr'}         2.55351295663785e-15
+    {'Epoch_Stim:logPulses'}        {'Day_Sigmoid'         }        {'corr'}            0.187399054236613
+    {'Epoch_Pre:logPulses' }        {'Epoch_Pre:logPulses' }        {'std' }             1.57199517133838
+    {'Epoch_Stim:logPulses'}        {'Epoch_Pre:logPulses' }        {'corr'}          7.2307715370289e-12
+    {'Epoch_Stim:logPulses'}        {'Epoch_Stim:logPulses'}        {'std' }            0.796322009336149
+Group: Error
+    Name                        Estimate        
+    {'sqrt(Dispersion)'}        1.57199517133837
+R-squared:
+    Ordinary: 0.144040969606118
+    Adjusted: 0.143530505019129
+
+-- END MODEL --
+
+--- ANOVA ---
+
+    ANOVA marginal tests: DFMethod = 'residual'
+
+    Term                           FStat                DF1    DF2      pValue              
+    {'(Intercept)'        }         13.6741410839461    1      28506    0.000217835696676004
+    {'Treatment'          }        0.465321044167985    2      28506       0.627938247977296
+    {'Day'                }          8.0390815378336    1      28506     0.00458109591857479
+    {'Epoch'              }         5.52384746777375    2      28506      0.0039947377683557
+    {'Treatment:Day'      }         1.53034013208791    2      28506       0.216479812258901
+    {'Treatment:Epoch'    }         2.01397974514963    4      28506      0.0895818484616939
+    {'Day:Epoch'          }         10.4032665798246    2      28506    3.04485631084983e-05
+    {'Treatment:Day:Epoch'}         4.28872641506961    4      28506     0.00180715765640912
+
+-- END ANOVA --
+
+>> 
