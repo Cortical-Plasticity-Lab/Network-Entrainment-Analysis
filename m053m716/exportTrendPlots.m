@@ -1,7 +1,7 @@
-function fig = exportTrendPlots(T,epoch,response)
+function fig = exportTrendPlots(glme,epoch,response)
 %EXPORTTRENDPLOTS Export plots for longitudinal groupings by epoch
 %
-%  fig = exportTrendPlots(T,epoch);
+%  fig = exportTrendPlots(glme,epoch);
 %
 % Inputs
 %  T     - Data table
@@ -16,21 +16,36 @@ if nargin < 3
    response = 'MFR';
 end
 
+T = glme.Variables;
+
 fig = default.figure(sprintf('%s Trend Boxplots',epoch),...
    'Position',[0.1 0.1 0.8 0.8]);
 
 [G,TID] = findgroups(T(:,{'Treatment','Day','Epoch'}));
-labels = strcat(string(TID.Treatment),":D-", ...
-            num2str(TID.Day,'%02d'),"_{",...
-            string(TID.Epoch),"}");
+
 groupings = {'C',epoch; ...
              'RS',epoch;...
              'ADS',epoch};
 names = {'Control (C)','Random (RS)','Activity-Dependent (ADS)'};
-          
+c = {'#846663';'#f10c0c';'#3e64fb'}; % Color codings
+ 
 k = size(groupings,1);
+Gc = cell(k,1);
+for iG = 1:k
+   Gc{iG} = unique(T.Treatment(string(T.Treatment)==string(groupings{iG,1})));
+end
+
+
 mu = nan(1,k);
 sd = nan(1,k);
+
+fullDaysNum = unique(sort(T.Day,'ascend'));
+fullDaysList = getDayLabels(fullDaysNum);
+nPredRows = numel(fullDaysNum);
+epoch = unique(T.Epoch(string(T.Epoch)==epoch));
+P = T(1:nPredRows,:);
+P.Epoch = repmat(epoch,nPredRows,1);
+P.Day = fullDaysNum;
 
 for ii = 1:k
    ax = subplot(k,2,ii*2);
@@ -44,9 +59,28 @@ for ii = 1:k
    [dayList,iSort] = sort(dayList,'ascend');
    
    allDays = getDayLabels(dayList);
+   uAllDays = unique(allDays);
+   missingDays = setdiff(fullDaysList,uAllDays);   
    data = data(iSort);
    
-   boxplot(ax,data,allDays);
+   if ~isempty(missingDays)
+      data = [data; nan(numel(missingDays),1)]; %#ok<AGROW>
+      allDays = [allDays; missingDays]; %#ok<AGROW>
+   end
+   
+   % Show the observed data using boxplots
+   data = data(iSort);
+   COL = validatecolor(c{ii});   
+   boxplot(ax,data,allDays,'GroupOrder',fullDaysList,...
+      'BoxStyle','filled','Colors',COL);
+   
+   % Get prediction table for this marginal grouping, so that we can
+   % predict the Fixed-Effects-Only model output and superimpose as a trend
+   % on the box plots that represent the actual data.
+   P = predictorTable(P,Gc{ii});
+   data_p = exp(predict(glme,P,'Conditional',false));
+   default.line(ax,fullDaysNum-5,data_p,'Color',COL.*0.75); % Remove offset since fullDaysNum is in days but the ticks are aligned to indices technically
+   
    title(ax,sprintf('%s: %s',groupings{ii,1},groupings{ii,2}),...
       'FontName','Arial','Color','k');
    ylabel(ax,sprintf('Daily %s',response),...
@@ -54,7 +88,8 @@ for ii = 1:k
    if strcmp(response,'MFR')
       set(ax,...
          'XTickLabelRotation',30,...
-         'XTick',ax.XTick(1:2:end),...
+         'XTick',1:2:numel(fullDaysList),...
+         'XTickLabel',fullDaysList(1:2:end),...
          'LineWidth',1.5,...
          'FontName','Arial',...
          'FontSize',12,...
@@ -65,7 +100,8 @@ for ii = 1:k
    else
       set(ax,...
          'XTickLabelRotation',30,...
-         'XTick',ax.XTick(1:2:end),...
+         'XTick',1:2:numel(fullDaysList),...
+         'XTickLabel',fullDaysList(1:2:end),...
          'LineWidth',1.5,...
          'FontName','Arial',...
          'FontSize',12,...
@@ -149,6 +185,10 @@ title(ax,sprintf('Epoch[%s] Daily Trends by Treatment',epoch),'FontName','Arial'
       for iDay = 1:numel(days_str)
          days_str(iDay) = string(sprintf('Day-%02d',days(iDay)));
       end      
+   end
+
+   function P = predictorTable(P,group)
+      P.Treatment = repmat(group,size(P,1),1);
    end
 
 end

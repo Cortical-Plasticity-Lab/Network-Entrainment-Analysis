@@ -8,9 +8,9 @@ GLME refit after secondary outlier exclusion (n = 0 observations removed)
 GLME stats report export complete.
 	->	Contents in: Reports\GLME_IO_Stats_Export-FINAL__12-Jan-2021.txt
 
-Please wait, fitting GLME ("logMxc~1+Treatment*Day+(1+Day+logPulses|Rat_ID)")...complete ( 5.22 sec)
-Removing outliers: iteration 3...complete ( 4.06 sec)
-Saving locally ("GLME_IO-CORR_refit.mat")...complete ( 5.72 sec)
+Please wait, fitting GLME ("logMxc~1+Treatment*Day+(1+Day+logPulses|Rat_ID)")...complete ( 2.17 sec)
+Removing outliers: iteration 3...complete ( 1.93 sec)
+Saving locally ("GLME_IO-CORR_refit.mat")...complete ( 5.68 sec)
 --- MODEL ---
 
 Generalized linear mixed-effects model fit by PL

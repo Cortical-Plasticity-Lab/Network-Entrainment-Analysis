@@ -19,6 +19,9 @@ function configure(type)
 %
 % See also: assignin, mtb, Contents
 
+FORCE_RELOAD = true;  % Set true to force to reload from file (for example to regenerate with new MFR threshold)
+FORCE_RERUN = true;   % Set true to force rerun of model estimator even if file is present
+
 % % % START: MFR Parameters % % %
 
 % % % Spike rate observations threshold % % %
@@ -29,7 +32,7 @@ MFR_GLME_MODEL_RESPONSE = "LMFR";
 MFR_GLME_MODEL_SPEC = sprintf("%s~1+Treatment*Day*Epoch+(1+Day+logPulses*Epoch|Rat_ID)",MFR_GLME_MODEL_RESPONSE);
 MFR_GLME_DIST = 'normal';
 MFR_GLME_LINK = 'identity'; 
-MFR_GLME_FIT_METHOD = 'Laplace'; % 'REMPL' | 'Laplace' | 'ApproximateLaplace'
+MFR_GLME_FIT_METHOD = 'REMPL'; % 'REMPL' | 'Laplace' | 'ApproximateLaplace'
 MFR_SPREADSHEET_LONG_NAME = "Exports/FR_stats_C_long.xlsx";
 
 % % % END: MFR Parameters % % %
@@ -57,8 +60,6 @@ switch lower(string(type))
       SPREADSHEET_SHEET = "FR_stats_C_long";
       SPREADSHEET_ROWS = [2, 29434];
       LOCAL_TABLE_NAME = "MFR_Table.mat";
-      FORCE_RELOAD = false;  % Set true to force to reload from file (for example to regenerate with new MFR threshold)
-      FORCE_RERUN = false;   % Set true to force rerun of model estimator even if file is present
       REPORT_NAME = "Reports/GLME_FR_Stats_Export";
       FIGURE_FOLDER = 'Figures';
       
@@ -78,8 +79,6 @@ switch lower(string(type))
       %  IO_SPREADSHEET_LONG_NAME): 
       SPREADSHEET_SHEET = "Sheet1";
       SPREADSHEET_ROWS = [2, 6917];
-      FORCE_RELOAD = true;  % Set true to force to reload from file (for example to regenerate with new MFR threshold)
-      FORCE_RERUN = true;   % Set true to force rerun of model estimator even if file is present
       REPORT_NAME = "Reports/GLME_IO_Stats_Export";
       FIGURE_FOLDER = 'Figures';
       

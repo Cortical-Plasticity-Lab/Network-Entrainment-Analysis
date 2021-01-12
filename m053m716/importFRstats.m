@@ -83,25 +83,20 @@ T = outerjoin(T,S,'Type','left',...
    'RightVariables',{'nPulses','Exclude'});
 T.Rat_ID = categorical(T.Rat_ID);
 
-
 % Exclude any observations with MFR outside of fixed bounds
 exc = (T.MFR <= MFR_THRESH(1)) | (T.MFR > MFR_THRESH(2)) | isnan(T.nPulses);
 T.Exclude = T.Exclude | exc; 
 
-% % Need to recover the number of "SHAM" pulses in "CONTROL" group, use
-% % averages
-% iStim = T.Treatment=="ADS" | T.Treatment=="RS"; % Only use observations with pulses
-% uEpoch = unique(T.Epoch);
-% iControl = T.Treatment=="C"; % Assign "C" number pulses based on corresponding means
-% for ii = 1:numel(uEpoch)
-%    iEpoch = T.Epoch==uEpoch(ii);
-%    if uEpoch(ii)=="Stim"
-%       nPulses_hat = nanmean(T.nPulses(iEpoch & iStim));
-%       T.nPulses(iControl & iEpoch) = repmat(nPulses_hat,sum(iControl & iEpoch),1);
-%    else
-%       T.nPulses(iEpoch) = zeros(sum(iEpoch),1);
-%    end
-% end
+% When assigning pulses by day, the pulses originated only from the Stim
+% epochs. However, we did the outerjoin by rat and day. Set the pulses
+% during non-Stim epochs to zero:
+uEpoch = unique(T.Epoch);
+for ii = 1:numel(uEpoch)
+   iEpoch = T.Epoch==uEpoch(ii);
+   if uEpoch(ii)~="Stim"
+      T.nPulses(iEpoch) = zeros(sum(iEpoch),1);
+   end
+end
 
 % Get unique groupings by rat, channel, day: 
 g = {'Rat_ID','Pseudo_Channel_ID','Day'};

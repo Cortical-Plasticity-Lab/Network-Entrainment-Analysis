@@ -64,8 +64,8 @@ for ii = 1:k
    data = data(iSort);
    
    if ~isempty(missingDays)
-      data = [data; nan(numel(missingDays),1)];
-      allDays = [allDays; missingDays];
+      data = [data; nan(numel(missingDays),1)]; %#ok<AGROW>
+      allDays = [allDays; missingDays]; %#ok<AGROW>
    end
    COL = validatecolor(c{ii});
    boxplot(ax,data,allDays,'GroupOrder',fullDaysList,'BoxStyle','filled','Colors',COL);
@@ -74,8 +74,8 @@ for ii = 1:k
    ylabel(ax,'Daily MFR_{Marginal}','FontName','Arial','Color','k');
    set(ax,...
       'XTickLabelRotation',30,...
-      'XTick',ax.XTick(1:2:end),...
-      'XTickLabels',uAllDays(1:2:end),...
+      'XTick',1:2:numel(fullDaysList),...
+      'XTickLabels',fullDaysList(1:2:end),...
       'LineWidth',1.5,...
       'FontName','Arial',...
       'FontSize',12,...
@@ -199,7 +199,7 @@ legend(ax,'FontName','Arial','TextColor','k','Location','south');
       days_str = strings(size(days));
       for iDay = 1:numel(days_str)
          days_str(iDay) = string(sprintf('Day-%02d',days(iDay)));
-      end      
+      end
    end
 
 end

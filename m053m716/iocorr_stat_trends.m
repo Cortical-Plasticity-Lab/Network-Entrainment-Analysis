@@ -123,7 +123,7 @@ fig = plotFittedResiduals(glme2);
 default.savefig(fig,fullfile(FIGURE_FOLDER,'IO-Corr - GLME - Residuals after refit'),REPORT_TAG);
 
 %% Generate trend plot (STIM-only)
-fig = exportTrendPlots(T,'Stim',glme2.ResponseName);
+fig = exportTrendPlots(glme2,'Stim',glme2.ResponseName);
 default.savefig(fig,fullfile(FIGURE_FOLDER,'IOCorr - GLME'));
 
 %% Random Effects

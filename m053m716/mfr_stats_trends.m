@@ -101,13 +101,13 @@ default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Fitted Residuals'),REPO
 
 %% Generate summary figures
 % % Only needs to be run once: % %
-fig = exportTrendPlots(T,'Pre');
+fig = exportTrendPlots(glme,'Pre');
 default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Trends by Epoch - Pre'));
 
-fig = exportTrendPlots(T,'Stim');
+fig = exportTrendPlots(glme,'Stim');
 default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Trends by Epoch - Stim'));
 
-fig = exportTrendPlots(T,'Post');
+fig = exportTrendPlots(glme,'Post');
 default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Trends by Epoch - Post'));
 
 %% Generate summary figures: marginal values (fixed-effects from model only)
