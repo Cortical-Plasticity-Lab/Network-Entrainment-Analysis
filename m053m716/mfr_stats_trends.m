@@ -15,29 +15,9 @@ clearvars -except T
 clc;
 
 %% CHANGE PARAMETERS HERE
-% % % Spike rate observations threshold % % %
-MFR_THRESH = [0.0025, 50]; % Bounds on activity
-% % % % % % % % % % % % % % % % % % % % % % %
-
-% Statistical model parameters
-MFR_GLME_MODEL_RESPONSE = "LMFR";
-MFR_GLME_MODEL_SPEC = sprintf("%s~1+Treatment*Day*Epoch+(1+Day+logPulses*Epoch|Rat_ID)",MFR_GLME_MODEL_RESPONSE);
-MFR_GLME_DIST = 'normal';
-MFR_GLME_LINK = 'identity'; 
-MFR_GLME_FIT_METHOD = 'Laplace'; % 'REMPL' | 'Laplace' | 'ApproximateLaplace'
-
-LOCAL_MODEL_NAME = "GLME_LMFR.mat"; % Change this if altering models
-REPORT_TAG = "FINAL"; % Change this to "tag" reports with fixed name prepended
-
-% Data I/O parameters (probably won't change)
-MFR_SPREADSHEET_LONG_NAME = "Exports/FR_stats_C_long.xlsx";
-SPREADSHEET_SHEET = "FR_stats_C_long";
-SPREADSHEET_ROWS = [2, 29434];
-LOCAL_TABLE_NAME = "MFR_Table.mat";
-FORCE_RELOAD = false;  % Set true to force to reload from file (for example to regenerate with new MFR threshold)
-FORCE_RERUN = false;   % Set true to force rerun of model estimator even if file is present
-REPORT_NAME = "Reports/GLME_FR_Stats_Export";
-FIGURE_FOLDER = 'Figures';
+configure('MFR'); % Exports workspace variables for MFR (defaults)
+% Overwrite any outputs here, e.g.
+%  FORCE_RERUN = true;
 
 %% Import data (if needed)
 if exist('T','var')==0 || ~istable(T) || FORCE_RELOAD
@@ -80,13 +60,6 @@ default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Input Distribution - LM
 %    'BinEdges',linspace(0,7,8001),'XLabel','\omega (normalized spikes/sec)',...
 %    'XScale','log');
 % default.savefig(fig,fullfile(FIGURE_FOLDER,'MFR - GLME - Input Distribution - Omega'));
-
-% Input stimuli distributions
-[~,TID] = findgroups(T(:,{'Rat_ID','Treatment'}));
-fig = plotStimsByAnimal(T.nPulses(~T.Exclude),T.Rat_ID(~T.Exclude),TID);
-default.savefig(fig,fullfile(FIGURE_FOLDER,'Distribution of Stimuli by Rat'));
-fig = plotPulsesByDay(T);
-default.savefig(fig,fullfile(FIGURE_FOLDER,'Stimulus counts by Day'));
 
 %% Run statistical model
 tic;

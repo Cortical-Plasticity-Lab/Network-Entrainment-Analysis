@@ -1,7 +1,10 @@
 % M053M716  Project with scripts for visualizing synaptophysin pixel fluorescent intensity distributions and statistics.
 %
 % Packages
-%   +default                - Package to return default versions of objects I like
+%   +default                  - Package to return default versions of objects I like
+%
+% Configuration
+%   configure                 - Workspace "environment" configuration for running batch scripts
 %
 % Scripts
 %   main                      - Main script for exporting stats on AA synaptophysin (round 2)

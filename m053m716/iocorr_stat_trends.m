@@ -16,55 +16,18 @@ clear;
 clc;
 
 %% CHANGE PARAMETERS HERE
-MXC_THRESH = exp([-7.4 0]); % [lower, upper] bounds on Mxc (upper-bound of zero == 1 on non-log-transformed corr value)
-
-% Statistical model parameters
-IO_GLME_MODEL_RESPONSE = "logMxc";
-IO_GLME_MODEL_SPEC = sprintf("%s~1+Treatment*Day+(1+Day+logPulses|Rat_ID)",IO_GLME_MODEL_RESPONSE);
-IO_GLME_DIST = 'normal';
-IO_GLME_LINK = 'identity'; 
-IO_GLME_FIT_METHOD = 'REMPL'; % 'REMPL' | 'Laplace' | 'ApproximateLaplace'
-
-LOCAL_MODEL_NAME = "GLME_IO-CORR.mat"; % Change this if altering models
-REPORT_TAG = "FINAL"; % Change this to "tag" reports with fixed name prepended
-
-% Data I/O parameters (probably won't change, except
-%  IO_SPREADSHEET_LONG_NAME): 
-IO_SPREADSHEET_LONG_NAME = "Exports/IO_stats_long.xls";
-SPREADSHEET_SHEET = "Sheet1";
-SPREADSHEET_ROWS = [2, 6917];
-FORCE_RELOAD = true;  % Set true to force to reload from file (for example to regenerate with new MFR threshold)
-FORCE_RERUN = true;   % Set true to force rerun of model estimator even if file is present
-REPORT_NAME = "Reports/GLME_IO_Stats_Export";
-FIGURE_FOLDER = 'Figures';
+configure('Mxc'); % Exports workspace variables for MFR (defaults)
+% Overwrite any outputs here, e.g.
+%  FORCE_RERUN = true;
 
 %% Import data table
 T = importIOstats(IO_SPREADSHEET_LONG_NAME, SPREADSHEET_SHEET, SPREADSHEET_ROWS, MXC_THRESH);
 
 %% Make figure of input distribution
-% fig = plotInputDistribution(T.Mxc,T.Properties.UserData.MXC_THRESH,...
-%    'BinEdges',linspace(-0.1,1.1,1001),'XScale','linear',...
-%    'XLabel','C_{max}');
-% default.savefig(fig,fullfile(FIGURE_FOLDER,'IO - GLME - Mxc Input Distribution - Linear'));
-% 
-% fig = plotInputDistribution(T.Mxc,T.Properties.UserData.MXC_THRESH,...
-%    'BinEdges',linspace(0,0.2,101),'XScale','log',...
-%    'XLabel','C_{max}');
-% default.savefig(fig,fullfile(FIGURE_FOLDER,'IO - GLME - Mxc Input Distribution - Log-Inset'));
-
 fig = plotInputDistribution(T.logMxc,log(T.Properties.UserData.MXC_THRESH),...
    'BinEdges',linspace(-12,0,1001),'XScale','linear',...
    'XLabel','log(C_{max})');
 default.savefig(fig,fullfile(FIGURE_FOLDER,'IO - GLME - LOG-Mxc Input Distribution'));
-
-% Input stimuli distributions
-% [~,TID] = findgroups(T(:,{'Rat_ID','Treatment'}));
-% fig = plotStimsByAnimal(T.nPulses(~T.Exclude),T.Rat_ID(~T.Exclude),TID);
-% default.savefig(fig,fullfile(FIGURE_FOLDER,'Distribution of Stimuli by Rat'));
-
-% TT = data2timetable(T);
-% fig = plotStacked(TT); % Plot stacked T.Mxc means
-% default.savefig(fig,fullfile(FIGURE_FOLDER,'Mean Mxc by Rat'),REPORT_TAG);
 
 %% Run statistical model
 tic;
