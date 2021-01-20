@@ -1,8 +1,8 @@
-function fig = exportTrendPlots(glme,epoch,response,groupings)
+function fig = exportTrendPlots(glme,epoch,response,groupings,fcn)
 %EXPORTTRENDPLOTS Export plots for longitudinal groupings by epoch
 %
 %  fig = exportTrendPlots(glme,epoch);
-%  fig = exportTrendPlots(glme,epoch,response,groupings);
+%  fig = exportTrendPlots(glme,epoch,response,groupings,fcn);
 %
 % Inputs
 %  T     - Data table
@@ -27,9 +27,35 @@ if nargin < 4
    groupings = {'C',epoch; ...
                 'RS',epoch;...
                 'ADS',epoch};
+   names = {'Control (C)','Random (RS)','Activity-Dependent (ADS)'};
+   c = {'#846663';'#f10c0c';'#3e64fb'}; % Color codings
+else
+   names = cell(1,size(groupings,1));
+   c = cell(size(names));
+   for ii = 1:size(groupings,1)
+      switch upper(groupings{ii,1})
+         case 'C'
+            names{1,ii} = 'Control (C)';
+            c{ii} = '#846663';
+         case 'RS'
+            names{1,ii} = 'Random (RS)';
+            c{ii} = '#f10c0c';
+         case 'ADS'
+            names{1,ii} = 'Activity-Dependent (ADS)';
+            c{ii} = '#3e64fb';
+         otherwise
+            names{1,ii} = 'ERROR';
+            c{ii} = '#232323';
+      end
+      
+   end
 end
-names = {'Control (C)','Random (RS)','Activity-Dependent (ADS)'};
-c = {'#846663';'#f10c0c';'#3e64fb'}; % Color codings
+
+if nargin < 5
+   fcn = @(x)exp(x); % Transform on data output
+end
+
+
  
 k = size(groupings,1);
 Gc = cell(k,1);
@@ -51,6 +77,7 @@ P = T(1:nPredRows,:);
 P.Epoch = repmat(epoch,nPredRows,1);
 P.Day = fullDaysNum;
 
+warning('off','MATLAB:Axes:NegativeLimitsinLogAxis');
 for ii = 1:k
    ax = subplot(k,2,ii*2);
    iSel = find(TID.Treatment==string(groupings{ii,1}) & ...
@@ -82,7 +109,7 @@ for ii = 1:k
    % predict the Fixed-Effects-Only model output and superimpose as a trend
    % on the box plots that represent the actual data.
    P = predictorTable(P,Gc{ii});
-   data_p = exp(predict(glme,P,'Conditional',false));
+   data_p = fcn(predict(glme,P,'Conditional',false));
    default.line(ax,fullDaysNum-5,data_p,'Color',COL.*0.75); % Remove offset since fullDaysNum is in days but the ticks are aligned to indices technically
 %    default.line(ax,P.Day-5,data_p,'Color',COL.*0.75); % Produce the same
 %                                                       % result using full
@@ -119,6 +146,8 @@ for ii = 1:k
          );
    end
 end
+
+% Bar graph
 ax = subplot(k,2,1:2:(numel(groupings)-3));
 set(ax,'XTick',1:k,...
    'XTickLabels',names,...
@@ -131,9 +160,9 @@ set(ax,'XTick',1:k,...
    'FontSize',13,...
    'YLim',[0 15],...
    'XAxisLocation','top',...
+   'Tag','BarAxes',...
    'YTick',[5 10]);
 
-c = {'#846663';'#f10c0c';'#3e64fb'};
 for ii = 1:k
    bar(ax,ii,mu(ii),'FaceColor',c{ii},'EdgeColor','k','LineWidth',1.25,...
       'DisplayName',string(names{ii}));
@@ -160,6 +189,7 @@ set(ax,'XLim',[5 27],...
    'XColor','k',...
    'YColor','k',...
    'YLim',[-5 15],...
+   'Tag','CIAxes',...
    'YTick',[-5  0  5  15],'FontName','Arial');
 tSub = T(~T.Exclude,:);
 [G,TID] = findgroups(tSub(:,{'Rat_ID','Day','Epoch'}));
@@ -188,7 +218,7 @@ end
 % xlabel(ax,'Post-Op Day','FontName','Arial','Color','k');
 ylabel(ax,response,'FontName','Arial','Color','k');
 title(ax,sprintf('Epoch[%s] Daily Trends by Treatment',epoch),'FontName','Arial','Color','k','FontWeight','bold');
-
+warning('on','MATLAB:Axes:NegativeLimitsinLogAxis');
    function days_str = getDayLabels(days)
       days_str = strings(size(days));
       for iDay = 1:numel(days_str)

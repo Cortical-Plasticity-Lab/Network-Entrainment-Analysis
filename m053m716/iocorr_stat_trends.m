@@ -130,14 +130,16 @@ default.savefig(fig,fullfile(FIGURE_FOLDER,'IO-Corr - GLME - Residuals after ref
 
 %% Generate trend plot (STIM-only)
 groupings = {'RS','Stim';'ADS','Stim'};
-fig = exportTrendPlots(glme2,'Stim',glme2.ResponseName,groupings);
-ax = findobj(fig.Children,'Type','Axes');
-for ii = 1:numel(ax)
-   if strcmpi(ax(ii).YScale,'linear')
-      set(ax(ii),'YLim',[-10 5]);
-   end
-end
-default.savefig(fig,fullfile(FIGURE_FOLDER,'IOCorr - GLME'));
+fig = exportTrendPlots(glme2,'Stim',glme2.ResponseName,groupings,@(x)x);
+set(findobj(fig.Children,'Tag','BarAxes'),'YLim',[-10 5]);
+set(findobj(fig.Children,'Tag','CIAxes'),'YLim',[-10 5]);
+% ax = findobj(fig.Children,'Type','Axes');
+% for ii = 1:numel(ax)
+%    if strcmpi(ax(ii).YScale,'linear')
+%       set(ax(ii),'YLim',[-10 5]);
+%    end
+% end
+default.savefig(fig,fullfile(FIGURE_FOLDER,'IOCorr - GLME - Trends'));
 
 %% Random Effects
 data = printRandomEffects(glme);
