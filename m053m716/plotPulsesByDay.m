@@ -57,8 +57,14 @@ else
    face_alpha_out = face_alpha_in;
    edge_alpha_out = edge_alpha_in;
 end
+if ismember('Epoch',T.Properties.VariableNames)
+   iKeep = T.Epoch == "Stim";
+else
+   iKeep = true(size(T,1),1);
+end
+
 for ii = 1:numel(g)
-   idx = string(T.Treatment)==g(ii) & ~T.Exclude;
+   idx = string(T.Treatment)==g(ii) & ~T.Exclude & iKeep;
    scatter(ax,T.Day(idx),T.nPulses(idx),...
       'MarkerFaceColor',c.(g(ii)),...
       'MarkerEdgeColor',c.(g(ii)),...

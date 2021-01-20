@@ -1,0 +1,67 @@
+**GLME: 19-Jan-2021**
+--- <strong>NOTES</strong> ---
+
+Report generated on 19-Jan-2021 10:43:40
+
+	->	MXC Bounds: [0.0000 < MXC <= 1.0000] 
+	->	Fitted residuals scatter:
+			Figures\IO-Corr - GLME - Fitted ResidualsFINAL
+
+-- <strong>END NOTES</strong> --
+
+Please wait, fitting GLME ("logMxc~1+Treatment*Day+(1+Day+logPulses|Rat_ID)")...saving locally ("GLME_IO-CORR.mat")...complete ( 4.40 sec)
+--- MODEL ---
+
+Generalized linear mixed-effects model fit by PL
+
+Model information:
+    Number of observations            6527
+    Fixed effects coefficients           4
+    Random effects coefficients         30
+    Covariance parameters                7
+    Distribution                    Normal
+    Link                            Identity
+    FitMethod                       REMPL 
+
+Formula:
+    logMxc ~ 1 + Treatment*Day + (1 + Day + logPulses | Rat_ID)
+
+Model fit statistics:
+    AIC                 BIC                 LogLikelihood        Deviance        
+    24157.5683082055    24232.1822945952    -12067.7841541027    24135.5683082055
+Fixed effects coefficients (95% CIs):
+    Name                         Estimate               SE                    tStat                 DF      pValue                  Lower                  Upper            
+    {'(Intercept)'      }          -4.52431981369027     0.509686500924328      -8.8766718472734    6523    8.77546259922286e-19      -5.52347239446151    -3.52516723291902
+    {'Treatment_ADS'    }         0.0451553697498258     0.509686500924328    0.0885944000242023    6523       0.929406978422899     -0.953997211021418     1.04430795052107
+    {'Day'              }        -0.0133764938978514    0.0198955174586345    -0.672337069174653    6523       0.501392949546143    -0.0523782284513928     0.02562524065569
+    {'Treatment_ADS:Day'}        0.00955823017411359    0.0198955174586344     0.480421290573944    6523       0.630943969055948    -0.0294435043794278    0.048559964727655
+Random effects covariance parameters:
+Group: Rat_ID (10 Levels)
+    Name1                  Name2                  Type            Estimate           
+    {'(Intercept)'}        {'(Intercept)'}        {'std' }           4.42892443525152
+    {'Day'        }        {'(Intercept)'}        {'corr'}         -0.279724622574081
+    {'logPulses'  }        {'(Intercept)'}        {'corr'}         -0.933461674029236
+    {'Day'        }        {'Day'        }        {'std' }         0.0619825818101813
+    {'logPulses'  }        {'Day'        }        {'corr'}        -0.0491993534200224
+    {'logPulses'  }        {'logPulses'  }        {'std' }          0.385199564228662
+Group: Error
+    Name                        Estimate        
+    {'sqrt(Dispersion)'}        1.52503937650415
+R-squared:
+    Ordinary: 0.275696313296365
+    Adjusted: 0.275363198002772
+
+-- END MODEL --
+
+--- ANOVA ---
+
+    ANOVA marginal tests: DFMethod = 'residual'
+
+    Term                     FStat                  DF1    DF2     pValue             
+    {'(Intercept)'  }           78.7953030841761    1      6523    8.7754625992228e-19
+    {'Treatment'    }        0.00784896771564838    1      6523      0.929406978422899
+    {'Day'          }          0.452037134586362    1      6523      0.501392949546143
+    {'Treatment:Day'}          0.230804616436734    1      6523      0.630943969055948
+
+-- END ANOVA --
+

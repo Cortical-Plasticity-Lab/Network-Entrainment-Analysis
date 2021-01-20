@@ -38,7 +38,7 @@ MFR_SPREADSHEET_LONG_NAME = "Exports/FR_stats_C_long.xlsx";
 % % % END: MFR Parameters % % %
 
 % % % START: I/O Correlation Parameters % % %
-MXC_THRESH = exp([-7.4 0]); % [lower, upper] bounds on Mxc (upper-bound of zero == 1 on non-log-transformed corr value)
+MXC_THRESH = exp([-10 0]); % [lower, upper] bounds on Mxc (upper-bound of zero == 1 on non-log-transformed corr value)
 
 % Statistical model parameters
 IO_GLME_MODEL_RESPONSE = "logMxc";

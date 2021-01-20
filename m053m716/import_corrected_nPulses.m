@@ -13,6 +13,14 @@ S = doPulseCountExclusion(S,PULSE_Z_THRESH);
 disp(head(S)); % Print the first few lines from the table.
 writetable(S,'Exports/nPulses_Formatted.xlsx');
 
+% % Double-check that controls have NO stims % %
+% >> sum(S.nPulses(S.Rat_ID == "R17-67"))
+% ans =
+%      0
+% >> sum(S.nPulses(S.Rat_ID == "R17-60"))
+% ans =
+%      0
+
 %% Plot the number of pulses by animal
 % Input stimuli distributions
 [~,TID] = findgroups(S(:,{'Rat_ID','Treatment'}));
@@ -24,12 +32,14 @@ fig = plotPulsesByDay(S);
 default.savefig(fig,fullfile('Figures','Stims','Stimulus counts by Day'));
 
 %% Plot number of pulses by day sized by MFR
+clear;
 configure('MFR_in');
 T = importFRstats(MFR_SPREADSHEET_LONG_NAME,SPREADSHEET_SHEET,SPREADSHEET_ROWS,MFR_THRESH);
 fig = plotPulsesByDay(T);
 default.savefig(fig,fullfile('Figures','Stims','Stimulus counts by Day - MFR'));
 
 %% Plot number of pulses by day sized by Mxc
+clear;
 configure('Mxc_in');
 T = importIOstats(IO_SPREADSHEET_LONG_NAME, SPREADSHEET_SHEET, SPREADSHEET_ROWS, MXC_THRESH);
 fig = plotPulsesByDay(T);

@@ -36,29 +36,24 @@ nPlot = size(TID,1);
 xl = [inf, -inf];
 yl = [inf, -inf];
 
-TID.obj = cell(size(TID,1),1);
 TID.idx = cell(size(TID,1),1);
 for iG = 1:nRow
    inGroup = TID.Rat_ID(string(TID.Treatment) == groupings(iG));
-   iGroup = ismember(rat_ID_vals,inGroup);
-   r = rat_ID_vals(iGroup);
-   u = unique(r);
+   u = unique(inGroup);
    for iU = 1:numel(u)
-      iTable = TID.Rat_ID == u(iU);
-      TID.idx{iTable} = r == u(iU);
+      iTable = find(TID.Rat_ID == u(iU),1,'first');
+      TID.idx{iTable} = rat_ID_vals == u(iU);
       iPlot = nCol * (iG - 1) + iU;
       ax = subplot(nRow,nCol,iPlot);
       set(ax,'LineWidth',1.25,'XColor','k','YColor','k',...
          'NextPlot','add','FontName','Arial','FontSize',12,...
          'XScale',pars.XScale,'YScale',pars.YScale,...
-         'XTick',[],'TickDir','both');
+         'XTick',[],'TickDir','both','Tag',string(u(iU)));
       
       default.histogram(ax,pulse_vals(TID.idx{iTable}));
       title(ax,string(u(iU)),'FontName','Arial','FontSize',15,'FontWeight','bold');
       
       if (iU == 1)
-%          ylabel(ax,sprintf(pars.YLabel,groupings(iG)),...
-%             'FontName','Arial','FontSize',13,'FontWeight','bold');
          ylabel(ax,pars.YLabel,...
             'FontName','Arial','FontSize',13,'FontWeight','bold');
          set(ax,'Tag',sprintf('%s.YLabel',ax.Tag));
@@ -71,7 +66,6 @@ for iG = 1:nRow
             'FontName','Arial','FontSize',13,'FontWeight','bold');
          set(ax,'Tag',sprintf('%s.XLabel',ax.Tag));
       end
-      TID.obj{iTable} = ax;
       xl = [min(xl(1),ax.XLim(1)), max(xl(2),ax.XLim(2))];
       yl = [min(yl(1),ax.YLim(1)), max(yl(2),ax.YLim(2))];
    end 
@@ -91,20 +85,22 @@ if isempty(pars.YLim)
 end
 
 cols = default.Colors();
+allAx = findobj(fig.Children,'Type','Axes');
 
 for ii = 1:size(TID,1)
-   set(TID.obj{ii},'XLim',pars.XLim,'YLim',pars.YLim);
-   delete(TID.obj{ii}.Children);
-   if contains(TID.obj{ii}.Tag,'XLabel')
-      set(TID.obj{ii},'XTick',pars.XTick,'XTickLabel',pars.XTickLabel);
+   ax = allAx(contains(string({allAx.Tag}),string(TID.Rat_ID(ii))));
+   set(ax,'XLim',pars.XLim,'YLim',pars.YLim);
+   delete(ax.Children);
+   if contains(ax.Tag,'XLabel')
+      set(ax,'XTick',pars.XTick,'XTickLabel',pars.XTickLabel);
    end
-   default.histogram(TID.obj{ii},pulse_vals(TID.idx{ii}),...
+   default.histogram(ax,pulse_vals(TID.idx{ii}),...
       'BinEdges',linspace(xl(1),xl(2),pars.NBins),...
       'FaceColor',cols.(string(TID.Treatment(ii))),...
       'EdgeColor',cols.(string(TID.Treatment(ii))),...
       'DisplayName',string(TID.Treatment(ii)));
-   if contains(TID.obj{ii}.Tag,'YLabel')
-      default.legend(TID.obj{ii});
+   if contains(ax.Tag,'YLabel')
+      default.legend(ax);
    end
 end
 
@@ -115,10 +111,10 @@ end
       pars = struct;
       pars.NBins = 21;
       pars.XLabel = '# Stimuli';
-      pars.XLim = [];
+      pars.XLim = [1e3 1e5];
       pars.XScale = 'log';
-      pars.XTick = [];
-      pars.XTickLabel = {};
+      pars.XTick = [1e3 1e4 1e5];
+      pars.XTickLabel = {'1k', '10k', '100k'};
       pars.YLabel = '# Recordings';
       pars.YLim = [0 20];
       pars.YScale = 'linear';

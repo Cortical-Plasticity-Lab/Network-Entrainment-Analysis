@@ -22,8 +22,15 @@ configure('Mxc'); % Exports workspace variables for MFR (defaults)
 
 %% Import data table
 T = importIOstats(IO_SPREADSHEET_LONG_NAME, SPREADSHEET_SHEET, SPREADSHEET_ROWS, MXC_THRESH);
+T.Epoch = repmat("Stim",size(T,1),1); % For the plotting functions only, does not actually mean anything here.
 
 %% Make figure of input distribution
+fig = plotInputDistribution(T.Mxc,T.Properties.UserData.MXC_THRESH,...
+   'BinEdges',linspace(0,1,1001),'XScale','linear',...
+   'XLabel','C_{max}');
+set(gca,'XLim',[-0.01, 0.2]);
+default.savefig(fig,fullfile(FIGURE_FOLDER,'IO - GLME - Mxc Input Distribution'));
+
 fig = plotInputDistribution(T.logMxc,log(T.Properties.UserData.MXC_THRESH),...
    'BinEdges',linspace(-12,0,1001),'XScale','linear',...
    'XLabel','log(C_{max})');
@@ -118,12 +125,18 @@ end
 exportStats(glme2,name,notes);
 
 %% Generate diagnostic figures
-T.Epoch = repmat("Stim",size(T,1),1);
 fig = plotFittedResiduals(glme2);
 default.savefig(fig,fullfile(FIGURE_FOLDER,'IO-Corr - GLME - Residuals after refit'),REPORT_TAG);
 
 %% Generate trend plot (STIM-only)
-fig = exportTrendPlots(glme2,'Stim',glme2.ResponseName);
+groupings = {'RS','Stim';'ADS','Stim'};
+fig = exportTrendPlots(glme2,'Stim',glme2.ResponseName,groupings);
+ax = findobj(fig.Children,'Type','Axes');
+for ii = 1:numel(ax)
+   if strcmpi(ax(ii).YScale,'linear')
+      set(ax(ii),'YLim',[-10 5]);
+   end
+end
 default.savefig(fig,fullfile(FIGURE_FOLDER,'IOCorr - GLME'));
 
 %% Random Effects

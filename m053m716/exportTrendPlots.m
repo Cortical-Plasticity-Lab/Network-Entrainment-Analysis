@@ -1,7 +1,8 @@
-function fig = exportTrendPlots(glme,epoch,response)
+function fig = exportTrendPlots(glme,epoch,response,groupings)
 %EXPORTTRENDPLOTS Export plots for longitudinal groupings by epoch
 %
 %  fig = exportTrendPlots(glme,epoch);
+%  fig = exportTrendPlots(glme,epoch,response,groupings);
 %
 % Inputs
 %  T     - Data table
@@ -22,10 +23,11 @@ fig = default.figure(sprintf('%s Trend Boxplots',epoch),...
    'Position',[0.1 0.1 0.8 0.8]);
 
 [G,TID] = findgroups(T(:,{'Treatment','Day','Epoch'}));
-
-groupings = {'C',epoch; ...
-             'RS',epoch;...
-             'ADS',epoch};
+if nargin < 4
+   groupings = {'C',epoch; ...
+                'RS',epoch;...
+                'ADS',epoch};
+end
 names = {'Control (C)','Random (RS)','Activity-Dependent (ADS)'};
 c = {'#846663';'#f10c0c';'#3e64fb'}; % Color codings
  
@@ -41,6 +43,8 @@ sd = nan(1,k);
 
 fullDaysNum = unique(sort(T.Day,'ascend'));
 fullDaysList = getDayLabels(fullDaysNum);
+% P = T(string(T.Epoch)==epoch,:);
+
 nPredRows = numel(fullDaysNum);
 epoch = unique(T.Epoch(string(T.Epoch)==epoch));
 P = T(1:nPredRows,:);
@@ -80,7 +84,12 @@ for ii = 1:k
    P = predictorTable(P,Gc{ii});
    data_p = exp(predict(glme,P,'Conditional',false));
    default.line(ax,fullDaysNum-5,data_p,'Color',COL.*0.75); % Remove offset since fullDaysNum is in days but the ticks are aligned to indices technically
-   
+%    default.line(ax,P.Day-5,data_p,'Color',COL.*0.75); % Produce the same
+%                                                       % result using full
+%                                                       % dataset. This is
+%                                                       because we set
+%                                                       'Conditional' to
+%                                                       false.
    title(ax,sprintf('%s: %s',groupings{ii,1},groupings{ii,2}),...
       'FontName','Arial','Color','k');
    ylabel(ax,sprintf('Daily %s',response),...
