@@ -2,6 +2,8 @@
 close all force;
 clear; 
 clc;
+import_corrected_nPulses;
+clear;
 mfr_stats_trends;
 clear;
 iocorr_stat_trends;
